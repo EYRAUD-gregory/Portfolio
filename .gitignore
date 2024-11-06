@@ -1,0 +1,50 @@
+# Fichiers générés par Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+*.env
+
+# Fichiers spécifiques à Docker
+*.log
+docker-compose.override.yml
+.docker/
+
+# Fichiers spécifiques à IDE (PyCharm, VS Code, etc.)
+.idea/
+.vscode/
+
+# Fichiers de base de données SQLite (si vous utilisez SQLite en développement)
+db.sqlite3
+
+# Fichiers de migrations
+migrations/
+
+# Fichiers de tests
+*.coverage
+*.tox
+*.nox
+*.coverage
+nosetests.xml
+coverage.xml
+*.hypothesis/
+
+# Fichiers de configuration pour le déploiement (par exemple Gunicorn ou Nginx)
+*.log
+*.pid
+
+# Dossier de fichiers statiques collectés par Django
+staticfiles/
+
+# Dossier des fichiers temporaires de Django
+media/
+
+# Caches
+*.cache
+*.swp
