@@ -1,24 +1,83 @@
-<!-- portfolio/templates/portfolio/portfolio.html -->
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+    {% load static %}
+    <title>Grégory EYRAUD - Portfolio</title>
     <meta charset="UTF-8">
-    <title>Mon Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'portfolio/styles.css' %}">
 </head>
-<body>
-    <h1>{{ profile.name }}</h1>
-    <p>{{ profile.bio }}</p>
-    <h2>Projects</h2>
-    <ul>
-        {% for project in projects %}
-            <li>
-                <h3>{{ project.title }}</h3>
-                <p>{{ project.description }}</p>
-                {% if project.link %}
-                    <a href="{{ project.link }}">Voir le projet</a>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+<body class="w3-sand">
+
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-deep-orange">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <i class="fa fa-home w3-xxlarge"></i>
+    <p>HOME</p>
+  </a>
+  <a href="#about" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <i class="fa fa-user w3-xxlarge"></i>
+    <p>ABOUT</p>
+  </a>
+  <a href="#photos" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <i class="fa fa-eye w3-xxlarge"></i>
+    <p>PHOTOS</p>
+  </a>
+  <a href="#contact" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <i class="fa fa-envelope w3-xxlarge"></i>
+    <p>CONTACT</p>
+  </a>
+</nav>
+
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium w3-deep-orange"  id="myNavbar">
+  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="#" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">HOME</a>
+    <a href="#about" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">ABOUT</a>
+    <a href="#photos" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">PHOTOS</a>
+    <a href="#contact" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">CONTACT</a>
+  </div>
+</div>
+
+<div id="main">
+    <!-- Header -->
+    <header class="w3-container w3-center w3-padding-32">
+        <h1><b>Grégory EYRAUD</b></h1>
+        <span id="typewriter" class="w3-text-theme w3-xlarge"></span> <!-- Élément cible pour l'effet d'écriture et d'éffacement de texte -->
+
+    </header>
+
+    <!-- About Section -->
+    <div class="w3-container w3-padding-32">
+        <h2>About Me</h2>
+        <p>{{ profile.bio }}</p>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="w3-container w3-padding-32">
+        <h2>Projects</h2>
+        <div class="w3-row-padding">
+            {% for project in projects %}
+            <div class="w3-third w3-margin-bottom">
+                <div class="w3-card-4">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width:100%">
+                    <div class="w3-container">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Lien vers le script JavaScript externe -->
+<script src="{% static 'portfolio/script.js' %}"></script>
+
 </body>
 </html>
