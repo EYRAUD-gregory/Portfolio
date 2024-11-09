@@ -37,6 +37,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'app/static')
 
+# Liste des répertoires dans lesquels Django cherchera les fichiers statiques
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Ici on définit le répertoire statique global
+]
+
 
 # Application definition
 
@@ -132,3 +137,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Pour postgresql
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'portfolio_db',
+#        'USER': 'portfolio_user',
+#        'PASSWORD': 'securepassword123',
+#        'HOST': 'db',  # le nom du service dans docker-compose.yml
+#        'PORT': 5432,
+#    }
+#}
