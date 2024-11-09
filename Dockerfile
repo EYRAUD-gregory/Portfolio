@@ -10,6 +10,8 @@ COPY requirements.txt .
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN python manage.py collectstatic --noinput
+
 # Copier tout le code de l'application dans le conteneur
 COPY . .
 
@@ -17,4 +19,4 @@ COPY . .
 EXPOSE 8000
 
 # Commande pour démarrer le serveur Django
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myportfolio.wsgi:application"]
+CMD ["gunicorn", "--bind", "localhost:8000", "myportfolio.wsgi:application"]

@@ -17,6 +17,7 @@ services:
       DJANGO_SETTINGS_MODULE: "myportfolio.settings"
     volumes:
       - .:/app
+      - ./staticfiles:/app/staticfiles
 
 
 # The commented out section below is an example of how to define a PostgreSQL
