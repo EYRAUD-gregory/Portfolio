@@ -103,7 +103,8 @@ DATABASES = {
         'NAME': 'portfolio_db',
         'USER': 'portfolio_user',
         'PASSWORD': 'securepassword123',
-        'HOST': 'localhost',  # le nom du service dans docker-compose.yml
+        'HOST': 'localhost',
+        #'HOST': 'portfolio-db-1',  # le nom du service dans docker-compose.yml
         'PORT': 5432,
     }
 }
