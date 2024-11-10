@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Charger les variables d’environnement à partir du fichier .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -100,11 +104,11 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'portfolio_db',
-        'USER': 'portfolio_user',
-        'PASSWORD': 'securepassword123',
-        'HOST': 'localhost',
-        #'HOST': 'portfolio-db-1',  # le nom du service dans docker-compose.yml
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        #'HOST': 'localhost',
+        'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
         'PORT': 5432,
     }
 }
