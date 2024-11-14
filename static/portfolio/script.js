@@ -222,3 +222,38 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 })();
+
+
+function openModal(button) {
+    // Récupère les informations du projet à partir des attributs data-*
+    var title = button.getAttribute("data-title");
+    var description = button.getAttribute("data-description").replace(/\\u000D\\u000A|\\u000D|\\u000A/g, "<br>"); // Remplacer les retours à la ligne par <br>
+    var startDate = button.getAttribute("data-start-date");
+    var endDate = button.getAttribute("data-end-date");
+
+    // Assigner les données aux éléments de la modale
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici
+    document.getElementById("modalStartDate").textContent = "Date de début : " + startDate;
+    document.getElementById("modalEndDate").textContent = "Date de fin : " + endDate;
+
+    // Afficher la modale
+    document.getElementById("projectModal").style.display = "flex";
+}
+
+
+function closeModal() {
+    // Masquer la modale
+    document.getElementById("projectModal").style.display = "none";
+}
+
+// Fermer la modale si l'utilisateur clique en dehors du contenu de la modale
+window.onclick = function(event) {
+    var modal = document.getElementById("projectModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+
+

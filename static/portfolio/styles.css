@@ -152,3 +152,48 @@ h1, #typewriter, #about{
     from, to { border-color: transparent; }
     50% { border-color: white; }
 }
+
+
+.image-container {
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour uniformiser la taille */
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Coupe l'image si elle dépasse le conteneur */
+}
+
+
+/* Style de la modale en overlay */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.close-button {
+    font-size: 24px;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
+}

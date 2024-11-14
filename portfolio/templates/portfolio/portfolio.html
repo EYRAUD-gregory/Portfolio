@@ -75,16 +75,40 @@
         <h2>Mes expériences</h2>
         <div class="w3-row-padding">
             {% for project in projects %}
-            <div class="w3-third w3-margin-bottom">
+            <div class="w3-third w3-margin-bottom project-card">
                 <div class="w3-card-4">
-                    <img src="{{ project.image.url }}" alt="{{ project.title }}" style="width:100%">
+                    <div class="image-container">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    </div>
+
                     <div class="w3-container">
                         <h3>{{ project.title }}</h3>
-                        <p>{{ project.description }}</p>
+                        <button
+                            class="open-modal-button"
+                            data-title="{{ project.title }}"
+                            data-description="{{ project.description|escapejs }}"
+                            data-start-date="{{ project.starting_date }}"
+                            data-end-date="{{ project.ending_date }}"
+                            onclick="openModal(this)">
+                            Voir les détails
+                        </button>
                     </div>
                 </div>
             </div>
             {% endfor %}
+
+
+            <!-- Modale pour afficher les détails du projet -->
+            <div id="projectModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeModal()">&times;</span>
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDescription"></p>
+                    <p id="modalStartDate"></p>
+                    <p id="modalEndDate"></p>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
