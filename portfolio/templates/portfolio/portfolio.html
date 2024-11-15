@@ -19,15 +19,11 @@
     <i class="fa fa-home w3-xxlarge"></i>
     <p>HOME</p>
   </a>
-  <a href="#about" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-    <i class="fa fa-user w3-xxlarge"></i>
-    <p>ABOUT</p>
-  </a>
     <a href="#formations" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
     <i class="fa fa-graduation-cap w3-xxlarge"></i>
     <p>FORMATIONS</p>
   </a>
-  <a href="#expériences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+  <a href="#experiences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
     <i class="fa fa-eye w3-xxlarge"></i>
     <p>EXPÉRIENCES</p>
   </a>
@@ -41,7 +37,6 @@
 <div class="w3-top w3-hide-large w3-hide-medium w3-deep-orange"  id="myNavbar">
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
     <a href="#" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">HOME</a>
-    <a href="#about" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">ABOUT</a>
     <a href="#formations" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">FORMATIONS</a>
     <a href="#experiences" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">EXPÉRIENCES</a>
     <a href="#contact" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">CONTACT</a>
@@ -50,48 +45,42 @@
 
 <div id="main">
     <!-- Header -->
-
     <!-- Animation du header faite par Marco Guglielmelli -->
-
     <!-- Conteneur principal du header avec l'animation -->
     <div id="large-header" class="large-header">
         <canvas id="demo-canvas"></canvas>
 
-        <!-- Contenu de votre header -->
         <header class="fullscreen-header header-content">
             <h1><b>Grégory EYRAUD</b></h1>
             <span id="typewriter" class="w3-text-theme w3-xlarge"></span> <!-- Effet de typewriter -->
 
-            <!-- Section "About" -->
-            <div class="about-section" id="about">
+            <div class="about-section">
                 <p>{{ profile.bio }}</p>
             </div>
         </header>
     </div>
-
 
     <!-- Projects Section -->
     <div class="w3-container w3-padding-32" id="experiences">
         <h2>Mes expériences</h2>
         <div class="w3-row-padding">
             {% for project in projects %}
-            <div class="w3-third w3-margin-bottom project-card">
-                <div class="w3-card-4">
-                    <div class="image-container">
-                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
-                    </div>
-
-                    <div class="w3-container">
-                        <h3>{{ project.title }}</h3>
-                        <button
-                            class="open-modal-button"
-                            data-title="{{ project.title }}"
-                            data-description="{{ project.description|escapejs }}"
-                            data-start-date="{{ project.starting_date }}"
-                            data-end-date="{{ project.ending_date }}"
-                            onclick="openModal(this)">
-                            Voir les détails
-                        </button>
+            <div class="w3-third w3-margin-bottom">
+                <div class="w3-card-4 project-card">
+                    <div class="project-image-container">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+                        <div class="overlay">
+                            <span class="w3-large">{{ project.title }}</span>
+                            <button
+                                class="w3-button w3-circle w3-teal project-button"
+                                data-title="{{ project.title }}"
+                                data-description="{{ project.description|escapejs }}"
+                                data-start-date="{{ project.start_date }}"
+                                data-end-date="{{ project.end_date }}"
+                                onclick="openModal(this)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

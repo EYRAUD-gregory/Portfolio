@@ -1,33 +1,5 @@
-/* Style du header pour qu'il prenne toute la taille de l'écran
-.fullscreen-header {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;       /* Centre le contenu verticalement
-    justify-content: center;    /* Centre le contenu horizontalement
-    background-color: black;
-    color: white;
-    text-align: center;
-}
-
-/* Style pour le conteneur interne
-.header-content {
-    max-width: 80%;             /* Limite la largeur pour améliorer la lisibilité
-    display: flex;
-    flex-direction: column;     /* Organise le contenu verticalement
-    align-items: center;
-}
-
-/* Style pour le titre
-.header-content h1 {
-    font-size: 3em;
-    margin: 0;
-}*/
-
-/* Header */
-
+/* Header
 /* Animation du header faite par Marco Guglielmelli
-
 /* Styles du header animé */
 .large-header {
     position: relative;
@@ -196,4 +168,56 @@ h1, #typewriter, #about{
     font-weight: bold;
     float: right;
     cursor: pointer;
+}
+
+
+/* Conteneur de l'image pour contrôler sa taille et son positionnement */
+.project-image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 200px; /* Hauteur fixe pour uniformiser les cartes */
+}
+
+/* Image elle-même */
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garder l'image sans distorsion */
+}
+
+/* Superposition au-dessus de l'image */
+.overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
+    color: white;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 0.3s;
+}
+
+/* Bouton "+" sur la superposition */
+.project-button {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+/* Affiche la superposition au survol */
+.project-image-container:hover .overlay {
+    opacity: 1;
+}
+
+/* Ombre légère pour chaque carte */
+.project-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
 }
