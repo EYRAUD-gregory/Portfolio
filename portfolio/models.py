@@ -26,3 +26,10 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Formation(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    starting_date = models.DateField(null=True, blank=True)
+    ending_date = models.DateField(null=True, blank=True)
