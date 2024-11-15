@@ -60,6 +60,16 @@
         </header>
     </div>
 
+    <!-- Section "Mes formations" -->
+    <section id="formations" class="w3-container formations-section">
+        {% for formation in formations %}
+            <div class="formation-card">
+                <h3>{{ formation.title }}</h3>
+                <p>{{ formation.description }}</p>
+            </div>
+        {% endfor %}
+    </section>
+
     <!-- Projects Section -->
     <div class="w3-container w3-padding-32" id="experiences">
         <h2>Mes expériences</h2>

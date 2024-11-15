@@ -256,4 +256,36 @@ window.onclick = function(event) {
 }
 
 
+// Sélectionne toutes les cartes de formation
+const formationCards = document.querySelectorAll('.formation-card');
+
+// Configuration de l'observateur
+const observerOptions = {
+    threshold: 0.1 // Déclenche l'animation lorsque 10% de la section est visible
+};
+
+// Fonction d'animation pour chaque carte
+function animateCards(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible'); // Ajoute la classe pour déclencher l'animation
+            observer.unobserve(entry.target); // Arrête d'observer une fois l'animation jouée
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const formationCards = document.querySelectorAll(".formation-card");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
+        });
+    }, { threshold: 0.1 });
+
+    formationCards.forEach(card => observer.observe(card));
+});
+
 

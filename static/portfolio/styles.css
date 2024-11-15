@@ -105,7 +105,8 @@ h1, #typewriter, #about{
 
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 #main {
-    margin-left: 120px
+    margin-left: 120px;
+    scroll-snap-type: y mandatory;
 }
 
 /* Remove margins from "page content" on small screens */
@@ -220,4 +221,56 @@ h1, #typewriter, #about{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     overflow: hidden;
+}
+
+/* Supprimez le scroll-snap du body */
+body {
+    overflow-y: auto;
+    height: 100vh;
+    margin: 0;
+    scroll-snap-type: none;
+}
+
+/* Appliquez scroll-snap-align uniquement aux sections */
+section {
+    scroll-snap-align: start;
+}
+
+/* Section "Mes Formations" avec snapping et animations */
+.formations-section {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh; /* Pleine hauteur de l'écran */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animation pour les cartes de formation */
+.formation-card {
+    flex: 1 1 30%;
+    min-width: 250px;
+    margin: 10px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.formation-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Expériences section avec snap-align */
+.experiences-section {
+    padding: 50px 20px;
+}
+
+/* Effet de défilement fluide */
+html, body  {
+    scroll-behavior: smooth;
 }
