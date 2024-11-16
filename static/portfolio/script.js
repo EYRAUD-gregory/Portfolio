@@ -1,5 +1,8 @@
+/* Animation de l'écriture des postes
+    Ritch Rivia: https://www.youtube.com/watch?v=161yxE3-00o&ab_channel=RitchRivia
+*/
 document.addEventListener("DOMContentLoaded", function() {
-    const textArray = ["Ingénieur IA", "Ingénieur Data", "Développeur Python"];
+    const textArray = ["Ingénieur IA", "Data Scientist/Engineer/Analyst", "Développeur Python"];
     const typingSpeed = 100;
     const erasingSpeed = 50;
     const initialDelay = 200;
@@ -35,193 +38,71 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(type, initialDelay);
 });
 
-// Animation du header faite par Marco Guglielmelli
 
-(function() {
+// Script pour animer les bulles
+const canvas = document.getElementById('bubbles-canvas');
+const ctx = canvas.getContext('2d');
 
-    var width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
+let width, height;
+let bubbles = [];
 
-    // Main
-    initHeader();
-    initAnimation();
-    addListeners();
+function init() {
+    resizeCanvas();
+    createBubbles();
+    animate();
+    window.addEventListener('resize', resizeCanvas);
+}
 
-    function initHeader() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        target = {x: width/2, y: height/2};
+// Ajuste la taille du canvas
+function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+}
 
-        largeHeader = document.getElementById('large-header');
-        largeHeader.style.height = height+'px';
+// Crée des bulles
+function createBubbles() {
+    bubbles = [];
+    const numBubbles = Math.floor(width / 50); // Nombre de bulles basé sur la largeur
 
-        canvas = document.getElementById('demo-canvas');
-        canvas.width = width;
-        canvas.height = height;
-        ctx = canvas.getContext('2d');
+    for (let i = 0; i < numBubbles; i++) {
+        bubbles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: 5 + Math.random() * 15,
+            velocityX: (Math.random() - 0.5) * 0.5,
+            velocityY: (Math.random() - 0.5) * 0.5,
+            opacity: Math.random() * 0.8 + 0.2
+        });
+    }
+}
 
-        // create points
-        points = [];
-        for(var x = 0; x < width; x = x + width/20) {
-            for(var y = 0; y < height; y = y + height/20) {
-                var px = x + Math.random()*width/20;
-                var py = y + Math.random()*height/20;
-                var p = {x: px, originX: px, y: py, originY: py };
-                points.push(p);
-            }
-        }
+// Anime les bulles
+function animate() {
+    ctx.clearRect(0, 0, width, height);
 
-        // for each point find the 5 closest points
-        for(var i = 0; i < points.length; i++) {
-            var closest = [];
-            var p1 = points[i];
-            for(var j = 0; j < points.length; j++) {
-                var p2 = points[j]
-                if(!(p1 == p2)) {
-                    var placed = false;
-                    for(var k = 0; k < 5; k++) {
-                        if(!placed) {
-                            if(closest[k] == undefined) {
-                                closest[k] = p2;
-                                placed = true;
-                            }
-                        }
-                    }
+    for (const bubble of bubbles) {
+        // Déplacement
+        bubble.x += bubble.velocityX;
+        bubble.y += bubble.velocityY;
 
-                    for(var k = 0; k < 5; k++) {
-                        if(!placed) {
-                            if(getDistance(p1, p2) < getDistance(p1, closest[k])) {
-                                closest[k] = p2;
-                                placed = true;
-                            }
-                        }
-                    }
-                }
-            }
-            p1.closest = closest;
-        }
+        // Rebond sur les bords
+        if (bubble.x < 0 || bubble.x > width) bubble.velocityX *= -1;
+        if (bubble.y < 0 || bubble.y > height) bubble.velocityY *= -1;
 
-        // assign a circle to each point
-        for(var i in points) {
-            var c = new Circle(points[i], 2+Math.random()*2, 'rgba(255,255,255,0.3)');
-            points[i].circle = c;
-        }
+        // Dessine la bulle
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle = `rgba(255, 255, 255, ${bubble.opacity})`;
+        ctx.fill();
     }
 
-    // Event handling
-    function addListeners() {
-        if(!('ontouchstart' in window)) {
-            window.addEventListener('mousemove', mouseMove);
-        }
-        window.addEventListener('scroll', scrollCheck);
-        window.addEventListener('resize', resize);
-    }
+    requestAnimationFrame(animate);
+}
 
-    function mouseMove(e) {
-        var posx = posy = 0;
-        if (e.pageX || e.pageY) {
-            posx = e.pageX;
-            posy = e.pageY;
-        }
-        else if (e.clientX || e.clientY)    {
-            posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-            posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-        }
-        target.x = posx;
-        target.y = posy;
-    }
+init();
 
-    function scrollCheck() {
-        if(document.body.scrollTop > height) animateHeader = false;
-        else animateHeader = true;
-    }
 
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        largeHeader.style.height = height+'px';
-        canvas.width = width;
-        canvas.height = height;
-    }
 
-    // animation
-    function initAnimation() {
-        animate();
-        for(var i in points) {
-            shiftPoint(points[i]);
-        }
-    }
-
-    function animate() {
-        if(animateHeader) {
-            ctx.clearRect(0,0,width,height);
-            for(var i in points) {
-                // detect points in range
-                if(Math.abs(getDistance(target, points[i])) < 4000) {
-                    points[i].active = 0.3;
-                    points[i].circle.active = 0.6;
-                } else if(Math.abs(getDistance(target, points[i])) < 20000) {
-                    points[i].active = 0.1;
-                    points[i].circle.active = 0.3;
-                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
-                    points[i].active = 0.02;
-                    points[i].circle.active = 0.1;
-                } else {
-                    points[i].active = 0;
-                    points[i].circle.active = 0;
-                }
-
-                drawLines(points[i]);
-                points[i].circle.draw();
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-
-    function shiftPoint(p) {
-        TweenLite.to(p, 1+1*Math.random(), {x:p.originX-50+Math.random()*100,
-            y: p.originY-50+Math.random()*100, ease:Circ.easeInOut,
-            onComplete: function() {
-                shiftPoint(p);
-            }});
-    }
-
-    // Canvas manipulation
-    function drawLines(p) {
-        if(!p.active) return;
-        for(var i in p.closest) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.closest[i].x, p.closest[i].y);
-            ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
-            ctx.stroke();
-        }
-    }
-
-    function Circle(pos,rad,color) {
-        var _this = this;
-
-        // constructor
-        (function() {
-            _this.pos = pos || null;
-            _this.radius = rad || null;
-            _this.color = color || null;
-        })();
-
-        this.draw = function() {
-            if(!_this.active) return;
-            ctx.beginPath();
-            ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
-            ctx.fill();
-        };
-    }
-
-    // Util
-    function getDistance(p1, p2) {
-        return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
-    }
-
-})();
 
 
 function openModal(button) {
@@ -233,7 +114,7 @@ function openModal(button) {
 
     // Assigner les données aux éléments de la modale
     document.getElementById("modalTitle").textContent = title;
-    document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici
+    document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici pour traiter le texte comme du HTML
     document.getElementById("modalStartDate").textContent = "Date de début : " + startDate;
     document.getElementById("modalEndDate").textContent = "Date de fin : " + endDate;
 
@@ -255,37 +136,28 @@ window.onclick = function(event) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const timelineItems = document.querySelectorAll('.container');
 
-// Sélectionne toutes les cartes de formation
-const formationCards = document.querySelectorAll('.formation-card');
+    const handleScroll = () => {
+        timelineItems.forEach(item => {
+            const rect = item.getBoundingClientRect();
 
-// Configuration de l'observateur
-const observerOptions = {
-    threshold: 0.1 // Déclenche l'animation lorsque 10% de la section est visible
-};
-
-// Fonction d'animation pour chaque carte
-function animateCards(entries, observer) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible'); // Ajoute la classe pour déclencher l'animation
-            observer.unobserve(entry.target); // Arrête d'observer une fois l'animation jouée
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const formationCards = document.querySelectorAll(".formation-card");
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("visible");
+            // Apparition si l'élément est visible dans la fenêtre
+            if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                item.classList.add('show');
+            }
+            // Disparition si l'élément quitte la fenêtre
+            else {
+                item.classList.remove('show');
             }
         });
-    }, { threshold: 0.1 });
+    };
 
-    formationCards.forEach(card => observer.observe(card));
+    window.addEventListener('scroll', handleScroll);
+
+    // Exécution initiale
+    handleScroll();
 });
 
 

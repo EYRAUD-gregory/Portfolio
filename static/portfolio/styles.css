@@ -1,22 +1,23 @@
 /* Header
-/* Animation du header faite par Marco Guglielmelli
 /* Styles du header animé */
 .large-header {
     position: relative;
     width: 100%;
     height: 100vh;
+    background: linear-gradient(135deg, darkred, black);
     display: flex;
-    background: #333 url('https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/img/demo-1-bg.jpg') no-repeat center center/cover;
     overflow: hidden;
     z-index: 1;
 }
 
-/* Positionnement du canvas */
-#demo-canvas {
+/* Canvas pour l'animation des bulles */
+canvas#bubbles-canvas {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
 /* Styles pour le contenu du header */
@@ -24,7 +25,6 @@
     position: absolute;
     inset: 0;
     z-index: 2; /* Au-dessus du canvas */
-    color: #f9f1e9;
     text-align: center;
     padding: 20px;
     display: flex;
@@ -39,19 +39,19 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-weight: bold;
+    color: white;
 }
 
 #typewriter {
     display: block;
     font-size: 1.5em;
-    color: #f9f1e9;
     margin-top: 10px;
 }
 
 .about-section p {
-    color: #f9f1e9;
     font-size: 1.2em;
     margin-top: 20px;
+    color: white;
 }
 
 @media only screen and (max-width: 768px) {
@@ -64,10 +64,10 @@
 	position: absolute;
 	margin: 0;
 	padding: 0;
-	color: #f9f1e9;
 	text-align: center;
 	top: 50%;
 	left: 50%;
+    color: white;
 	-webkit-transform: translate3d(-50%,-50%,0);
 	transform: translate3d(-50%,-50%,0);
 }
@@ -86,9 +86,6 @@ body, h1,h2,h3,h4,h5,h6 {
     font-family: "Montserrat", sans-serif
 }
 
-h1, #typewriter, #about{
-    color: white;
-}
 
 .w3-row-padding img {
     margin-bottom: 12px
@@ -118,6 +115,7 @@ h1, #typewriter, #about{
     white-space: nowrap;
     overflow: hidden;
     border-right: 3px solid white;
+    color: white;
     animation: blink-caret 0.75s step-end infinite;
 }
 
@@ -231,39 +229,188 @@ body {
     scroll-snap-type: none;
 }
 
-/* Appliquez scroll-snap-align uniquement aux sections */
-section {
-    scroll-snap-align: start;
+/* Conteneur de la timeline avec une ligne centrale */
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
-/* Section "Mes Formations" avec snapping et animations */
-.formations-section {
-    display: flex;
-    flex-wrap: wrap;
-    height: 100vh; /* Pleine hauteur de l'écran */
-    align-items: center;
-    justify-content: center;
+/* Ligne centrale */
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background: linear-gradient(180deg, #ff4500, #ff6347); /* Dégradé rouge-orange */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+    transform: translateX(-50%); /* Assure un alignement parfait */
 }
 
-/* Animation pour les cartes de formation */
-.formation-card {
-    flex: 1 1 30%;
-    min-width: 250px;
-    margin: 10px;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    border-radius: 8px;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+/* Conteneur des cartes */
+.container {
+    padding: 10px 40px;
+    position: relative;
+    width: 50%;
+    opacity: 0; /* Initialement invisible */
+    transform: translateY(30px); /* Décalage initial pour l'animation */
+    transition: all 0.6s ease-out;
+    animation: slideIn 1s ease-out forwards; /* Animation pour faire apparaître */
 }
 
-.formation-card.visible {
+/* Animation au défilement */
+.container.show {
     opacity: 1;
     transform: translateY(0);
+    transition: .3s;
 }
+
+/* Animation d'apparition */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cercles sur la timeline */
+.container::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    /*right: -17px;*/
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    border: 4px solid #ffffff;
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+    animation: pulse 1.5s infinite; /* Animation pulsante */
+    right: auto; /* Correction pour s'aligner au centre */
+    transform: translateX(-50%); /* Centre parfaitement les cercles */
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        background: darkred;
+    }
+    50% {
+        transform: scale(1.2);
+        background: #ff6347; /* Rouge clair */
+    }
+}
+
+/* Conteneur à gauche */
+.left {
+    left: 0;
+    text-align: right;
+}
+
+/* Conteneur à droite */
+.right {
+    left: 50%;
+}
+
+/* Ajout de flèches pour chaque conteneur */
+.left::before,
+.right::before {
+    content: " ";
+    position: absolute;
+    top: 22px;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    border-style: solid;
+}
+
+.left::before {
+    right: 30px;
+    border-width: 10px 0 10px 10px;
+    border-color: transparent transparent transparent #ffffff;
+}
+
+.right::before {
+    left: 30px;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #ffffff transparent transparent;
+}
+
+/* Fixe les cercles pour la droite */
+.right::after {
+    left: -16px;
+}
+
+/* Fixe les cercles pour la gauche */
+.left::after {
+    right: -10px;
+}
+
+/* Contenu des cartes */
+.timeline-content {
+    padding: 20px 30px;
+    background: #ffffff;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: scale(1.03);
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Titre des cartes */
+.timeline-content h3 {
+    font-size: 1.5em;
+    color: #ff4500; /* Rouge vif */
+    margin-bottom: 10px;
+}
+
+/* Texte des cartes */
+.timeline-content p {
+    color: #333333;
+    margin: 5px 0;
+}
+
+/* Media queries - Responsive */
+@media screen and (max-width: 600px) {
+    .timeline::after {
+        left: 31px;
+    }
+
+    .container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+
+    .container::before {
+        left: 60px;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+    }
+
+    .left::after,
+    .right::after {
+        left: 15px;
+    }
+
+    .right {
+        left: 0%;
+    }
+}
+
 
 /* Expériences section avec snap-align */
 .experiences-section {

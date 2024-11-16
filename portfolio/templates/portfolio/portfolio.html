@@ -15,7 +15,7 @@
 
 <!-- Icon Bar (Sidebar - hidden on small screens) -->
 <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center w3-deep-orange">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+  <a href="#main" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
     <i class="fa fa-home w3-xxlarge"></i>
     <p>HOME</p>
   </a>
@@ -36,7 +36,7 @@
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium w3-deep-orange"  id="myNavbar">
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <a href="#" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">HOME</a>
+    <a href="#main" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">HOME</a>
     <a href="#formations" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">FORMATIONS</a>
     <a href="#experiences" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">EXPÉRIENCES</a>
     <a href="#contact" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">CONTACT</a>
@@ -48,7 +48,7 @@
     <!-- Animation du header faite par Marco Guglielmelli -->
     <!-- Conteneur principal du header avec l'animation -->
     <div id="large-header" class="large-header">
-        <canvas id="demo-canvas"></canvas>
+        <canvas id="bubbles-canvas"></canvas>
 
         <header class="fullscreen-header header-content">
             <h1><b>Grégory EYRAUD</b></h1>
@@ -61,14 +61,22 @@
     </div>
 
     <!-- Section "Mes formations" -->
-    <section id="formations" class="w3-container formations-section">
-        {% for formation in formations %}
-            <div class="formation-card">
-                <h3>{{ formation.title }}</h3>
-                <p>{{ formation.description }}</p>
+    <section id="formations" class="timeline-section">
+        <h2>Mon parcours universitaire</h2>
+        <div class="timeline">
+            {% for formation in formations %}
+
+            <div class="container {% if forloop.counter|divisibleby:2 %} right {% else %} left {% endif %}">
+                <div class="timeline-content">
+                    <h3>{{ formation.title }}</h3>
+                    <p>{{ formation.starting_date }} - {{ formation.ending_date }}</p>
+                    <p>{{ formation.description }}</p>
+                </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </section>
+
 
     <!-- Projects Section -->
     <div class="w3-container w3-padding-32" id="experiences">
