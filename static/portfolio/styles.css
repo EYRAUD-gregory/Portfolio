@@ -207,7 +207,6 @@ h2:hover::after {
     border: 4px solid #ffffff;
     top: 15px;
     border-radius: 50%;
-    z-index: 1;
     animation: pulse 1.5s infinite; /* Animation pulsante */
     right: auto; /* Correction pour s'aligner au centre */
     transform: translateX(-50%); /* Centre parfaitement les cercles */
