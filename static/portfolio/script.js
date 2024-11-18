@@ -136,28 +136,32 @@ window.onclick = function(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const timelineItems = document.querySelectorAll('.container');
 
-    const handleScroll = () => {
-        timelineItems.forEach(item => {
-            const rect = item.getBoundingClientRect();
+document.addEventListener("DOMContentLoaded", () => {
+    const containers = document.querySelectorAll('.container'); // tous les containers de la timeline
 
-            // Apparition si l'élément est visible dans la fenêtre
-            if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                item.classList.add('show');
-            }
-            // Disparition si l'élément quitte la fenêtre
-            else {
-                item.classList.remove('show');
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                // Ajoute un délai progressif basé sur l'index pour éviter l'affichage simultané
+                const delay = Array.from(containers).indexOf(entry.target) * 200; // 200ms par conteneur
+                setTimeout(() => {
+                    entry.target.classList.add('show');
+                }, delay);
+
+                observer.unobserve(entry.target); // Arrête d'observer cet élément
             }
         });
-    };
+    }, {
+        threshold: 0.1 // Déclenche lorsque 10% de l'élément est visible
+    });
 
-    window.addEventListener('scroll', handleScroll);
-
-    // Exécution initiale
-    handleScroll();
+    containers.forEach(container => {
+        observer.observe(container);
+    });
 });
+
+
+
 
 
