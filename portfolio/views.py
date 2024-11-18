@@ -6,7 +6,7 @@ from .models import Profile, Project, Formation
 
 def portfolio_view(request):
     profile = Profile.objects.first()
-    projects = Project.objects.all()
+    projects = Project.objects.all().order_by('-starting_date')
     formations = Formation.objects.all().order_by('-starting_date')
     return render(request, 'portfolio/portfolio.html', {'profile': profile,
                                                         'projects': projects,
