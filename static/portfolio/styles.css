@@ -60,6 +60,39 @@ canvas#bubbles-canvas {
     }
 }
 
+/* Icône du menu burger */
+.burger-menu {
+    display: none; /* Cacher sur les grands écrans */
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Conteneur pour les liens du menu burger */
+#myNavbar.collapsed .nav-item {
+    display: none; /* Masque les items si le menu est fermé */
+}
+
+#myNavbar.expanded .nav-item {
+    display: block; /* Affiche les items si le menu est ouvert */
+}
+
+/* Media Query : activer le menu burger sur petit écran */
+@media (max-width: 768px) {
+    .burger-menu {
+        display: block; /* Montrer le menu burger */
+    }
+
+    #myNavbar {
+        flex-direction: column; /* Les items sont empilés */
+    }
+
+    #myNavbar .nav-item {
+        width: 100%; /* Occupe toute la largeur */
+    }
+}
+
 .main-title {
 	position: absolute;
 	margin: 0;
@@ -339,7 +372,7 @@ h2:hover::after {
 
 
 /* Style de la modale en overlay */
-.modal {
+.w3-modal {
     display: none; /* Cachée par défaut */
     position: fixed;
     z-index: 1000;
@@ -350,9 +383,10 @@ h2:hover::after {
     background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
     align-items: center;
     justify-content: center;
+    overflow: auto;
 }
 
-.modal-content {
+.w3-modal-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -360,6 +394,8 @@ h2:hover::after {
     max-width: 500px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: left;
+    margin: auto;
+    display: block;
 }
 
 .close-button {
@@ -368,7 +404,6 @@ h2:hover::after {
     float: right;
     cursor: pointer;
 }
-
 
 /* Conteneur de l'image pour contrôler sa taille et son positionnement */
 .project-image-container {

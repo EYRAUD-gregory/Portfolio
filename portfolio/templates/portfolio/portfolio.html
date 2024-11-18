@@ -42,15 +42,14 @@
 </nav>
 
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
-<div class="w3-top w3-hide-large w3-hide-medium w3-deep-orange"  id="myNavbar">
-  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <a href="#main" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">ACCUEIL</a>
-    <a href="#formations" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">FORMATIONS</a>
-    <a href="#experiences" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">EXPÉRIENCES</a>
-    <a href="#en_cours" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">PROJETS EN COURS</a>
-    <a href="#idées" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">MES PETITES IDÉES</a>
-    <a href="#contact" class="w3-bar-item w3-button my-custom-red w3-hover-orange" style="width:25% !important">CONTACT</a>
-  </div>
+<div class="w3-top collapsed w3-hide-large w3-hide-medium w3-deep-orange" id="myNavbar">
+  <span class="burger-menu" onclick="toggleMenu()">☰</span>
+    <a href="#main" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">ACCUEIL</a>
+    <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
+    <a href="#experiences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">EXPÉRIENCES</a>
+    <a href="#en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS</a>
+    <a href="#idées" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">MES PETITES IDÉES</a>
+    <a href="#contact" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">CONTACT</a>
 </div>
 
 <div id="main">
@@ -116,8 +115,8 @@
 
 
             <!-- Modale pour afficher les détails du projet -->
-            <div id="projectModal" class="modal">
-                <div class="modal-content">
+            <div id="projectModal" class="w3-modal w3-animate-opacity">
+                <div class="w3-modal-content">
                     <span class="close-button" onclick="closeModal()">&times;</span>
                     <h3 id="modalTitle"></h3>
                     <p id="modalDescription"></p>

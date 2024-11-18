@@ -108,7 +108,7 @@ init();
 function openModal(button) {
     // Récupère les informations du projet à partir des attributs data-*
     var title = button.getAttribute("data-title");
-    var description = button.getAttribute("data-description").replace(/\\u000D\\u000A|\\u000D|\\u000A/g, "<br>"); // Remplacer les retours à la ligne par <br>
+    var description =JSON.parse('"' + button.getAttribute("data-description").replace(/\\u000D\\u000A|\\u000D|\\u000A/g, "<br>") + '"'); // Remplacer les retours à la ligne par <br>
     var startDate = button.getAttribute("data-start-date");
     var endDate = button.getAttribute("data-end-date");
 
@@ -160,6 +160,19 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(container);
     });
 });
+
+
+function toggleMenu() {
+    const navbar = document.getElementById('myNavbar');
+    if (navbar.classList.contains('collapsed')) {
+        navbar.classList.remove('collapsed');
+        navbar.classList.add('expanded');
+    } else {
+        navbar.classList.remove('expanded');
+        navbar.classList.add('collapsed');
+    }
+}
+
 
 
 
