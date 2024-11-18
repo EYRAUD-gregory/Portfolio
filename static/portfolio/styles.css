@@ -127,18 +127,18 @@ h2:hover::after {
     margin-bottom: 12px
 }
 
-/* Set the width of the sidebar to 120px */
+/* Set the width of the sidebar to 130px */
 .w3-sidebar {
-    width: 120px;background: #222;
+    width: 130px;
 }
 
 .my-custom-red {
     background-color: #B22222; color: white
 }
 
-/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+/* Add a left margin to the "page content" that matches the width of the sidebar (130px) */
 #main {
-    margin-left: 120px;
+    margin-left: 130px;
     scroll-snap-type: y mandatory;
 }
 
