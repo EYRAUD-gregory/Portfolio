@@ -86,6 +86,42 @@ body, h1,h2,h3,h4,h5,h6 {
     font-family: "Montserrat", sans-serif
 }
 
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5em;
+    text-align: center;
+    color: #ff4500;
+    position: relative;
+    margin-top: 40px; /* Ajout de marge au-dessus */
+    margin-bottom: 40px; /* Ajout de marge en dessous */
+    line-height: 1.2; /* Espacement entre les lignes pour une meilleure lisibilité */
+}
+
+h2 span {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ff4500, #ff6347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-bottom: 20px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 4px;
+    background: #ff6347;
+    bottom: -10px; /* Décalage pour éviter que la ligne ne soit trop proche du texte */
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.5s ease-out;
+}
+
+h2:hover::after {
+    width: 100%;
+}
 
 .w3-row-padding img {
     margin-bottom: 12px
@@ -122,111 +158,6 @@ body, h1,h2,h3,h4,h5,h6 {
 @keyframes blink-caret { /* pour la bordure blanche qui clignote */
     from, to { border-color: transparent; }
     50% { border-color: white; }
-}
-
-
-.image-container {
-    width: 100%;
-    height: 200px; /* Hauteur fixe pour uniformiser la taille */
-    overflow: hidden;
-}
-
-.image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Coupe l'image si elle dépasse le conteneur */
-}
-
-
-/* Style de la modale en overlay */
-.modal {
-    display: none; /* Cachée par défaut */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: left;
-}
-
-.close-button {
-    font-size: 24px;
-    font-weight: bold;
-    float: right;
-    cursor: pointer;
-}
-
-
-/* Conteneur de l'image pour contrôler sa taille et son positionnement */
-.project-image-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    height: 200px; /* Hauteur fixe pour uniformiser les cartes */
-}
-
-/* Image elle-même */
-.project-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Garder l'image sans distorsion */
-}
-
-/* Superposition au-dessus de l'image */
-.overlay {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
-    color: white;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    transition: opacity 0.3s;
-}
-
-/* Bouton "+" sur la superposition */
-.project-button {
-    background: rgba(255, 255, 255, 0.8);
-    color: #333;
-    margin-top: 10px;
-    font-size: 1.2em;
-}
-
-/* Affiche la superposition au survol */
-.project-image-container:hover .overlay {
-    opacity: 1;
-}
-
-/* Ombre légère pour chaque carte */
-.project-card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* Supprimez le scroll-snap du body */
-body {
-    overflow-y: auto;
-    height: 100vh;
-    margin: 0;
-    scroll-snap-type: none;
 }
 
 /* Conteneur de la timeline avec une ligne centrale */
@@ -395,10 +326,111 @@ body {
     }
 }
 
+.image-container {
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour uniformiser la taille */
+    overflow: hidden;
+}
 
-/* Expériences section avec snap-align */
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Coupe l'image si elle dépasse le conteneur */
+}
+
+
+/* Style de la modale en overlay */
+.modal {
+    display: none; /* Cachée par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.close-button {
+    font-size: 24px;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
+}
+
+
+/* Conteneur de l'image pour contrôler sa taille et son positionnement */
+.project-image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 200px; /* Hauteur fixe pour uniformiser les cartes */
+}
+
+/* Image elle-même */
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garder l'image sans distorsion */
+}
+
+/* Superposition au-dessus de l'image */
+.overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
+    color: white;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 0.3s;
+}
+
+/* Bouton "+" sur la superposition */
+.project-button {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+/* Affiche la superposition au survol */
+.project-image-container:hover .overlay {
+    opacity: 1;
+}
+
+/* Ombre légère pour chaque carte */
+.project-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Supprimez le scroll-snap du body */
+body {
+    overflow-y: auto;
+    height: 100vh;
+    margin: 0;
+}
+
 .experiences-section {
-    padding: 50px 20px;
+    padding: 50px 20px; /* Ajoute un espace intérieur autour de la section */
 }
 
 /* Effet de défilement fluide */
