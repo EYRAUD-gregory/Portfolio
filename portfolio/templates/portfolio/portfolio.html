@@ -27,13 +27,9 @@
         <i class="fa fa-suitcase w3-xxlarge"></i>
         <p>EXPÉRIENCES</p>
     </a>
-    <a href="#en_cours" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <a href="#MES PETITES IDÉES" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
         <i class="fa fa-eye w3-xxlarge"></i>
-        <p>PROJETS EN COURS</p>
-    </a>
-    <a href="#idees" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-        <i class="fa fa-gears w3-xxlarge"></i>
-        <p>MES PETITES IDÉES</p>
+        <p>PROJETS EN COURS ET IDÉES</p>
     </a>
     <a href="#contact" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
         <i class="fa fa-envelope w3-xxlarge"></i>
@@ -47,8 +43,8 @@
     <a href="#main" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">ACCUEIL</a>
     <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
     <a href="#experiences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">EXPÉRIENCES</a>
-    <a href="#en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS</a>
-    <a href="#idées" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">MES PETITES IDÉES</a>
+    <a href="#idees_en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS ET IDÉES</a>
+    <a href="#idées" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange"></a>
     <a href="#contact" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">CONTACT</a>
 </div>
 
@@ -128,12 +124,32 @@
         </div>
     </div>
 
-    <div class="w3-container w3-padding-32" id="en_cours">
-        <h2>Mes projets en cours</h2>
-    </div>
-
-     <div class="w3-container w3-padding-32" id="idees">
-        <h2>Mes idées de projets</h2>
+    <!-- Projects Section -->
+    <div class="w3-container w3-padding-32" id="idees_en_cours">
+        <h2>Mes idées / Mes projets en cours</h2>
+        <div class="w3-row-padding">
+            {% for project_idea in project_ideas %}
+            <div class="w3-third w3-margin-bottom">
+                <div class="w3-card-4 project-card">
+                    <div class="project-image-container">
+                        <img src="{{ project_idea.image.url }}" alt="{{ project_idea.title }}" class="project-image">
+                        <div class="overlay">
+                            <span class="w3-large">{{ project_idea.title }}</span>
+                            <button
+                                class="w3-button w3-circle w3-teal project-button"
+                                data-title="{{ project_idea.title }}"
+                                data-description="{{ project_idea.description|escapejs }}"
+                                data-start-date="{{ project_idea.starting_date }}"
+                                data-end-date="{{ project_idea.ending_date }}"
+                                onclick="openModal(this)">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 

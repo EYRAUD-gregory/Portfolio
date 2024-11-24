@@ -115,8 +115,11 @@ function openModal(button) {
     // Assigner les données aux éléments de la modale
     document.getElementById("modalTitle").textContent = title;
     document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici pour traiter le texte comme du HTML
-    document.getElementById("modalStartDate").innerHTML = "<b>Date de début : </b>" + startDate;
-    document.getElementById("modalEndDate").innerHTML = "<b>Date de fin : </b>" + endDate;
+
+    if (endDate && endDate){
+        document.getElementById("modalStartDate").innerHTML = "<b>Date de début : </b>" + startDate;
+        document.getElementById("modalEndDate").innerHTML = "<b>Date de fin : </b>" + endDate;
+    }
 
     // Afficher la modale
     document.getElementById("projectModal").style.display = "flex";
