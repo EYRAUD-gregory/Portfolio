@@ -5,7 +5,7 @@ from django.urls import path
 from django.utils.html import format_html
 
 # Register your models here.
-from .models import Profile, Formation, Project, ProjectIdeas
+from .models import Profile, Formation, Project, ProjectIdea
 
 admin.site.register(Profile)
 admin.site.register(Project)
@@ -68,6 +68,6 @@ class ProjectIdeasAdmin(admin.ModelAdmin):
         ending_date = forms.DateField(label="Date de fin", required=True, widget=forms.TextInput(attrs={'type': 'date'}))
 
 
-admin.site.register(ProjectIdeas, ProjectIdeasAdmin)
+admin.site.register(ProjectIdea, ProjectIdeasAdmin)
 
 

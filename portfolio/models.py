@@ -38,7 +38,7 @@ class Project(models.Model):
         return self.title
 
 
-class ProjectIdeas(models.Model):
+class ProjectIdea(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='projects_ideas/', blank=True, null=True)
