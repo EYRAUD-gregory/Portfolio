@@ -74,7 +74,7 @@ ROOT_URLCONF = 'myportfolio.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,8 +107,8 @@ DATABASES = {
         'NAME': os.getenv("POSTGRES_DB"),
         'USER': os.getenv("POSTGRES_USER"),
         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-        #'HOST': 'localhost',
-        'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
+        'HOST': 'localhost',
+        #'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
         'PORT': 5432,
     }
 }

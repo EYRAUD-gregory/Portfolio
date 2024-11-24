@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    {% extends "admin/base_site.html" %}
+
+    {% block content %}
+      <h1>{{ title }}</h1>
+      <p>Vous êtes sur le point de convertir l'idée suivante en projet :</p>
+      <p><strong>Nom :</strong> {{ idea.title }}</p>
+      <p><strong>Description :</strong> {{ idea.description }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Convertir</button>
+      </form>
+    {% endblock %}
+
+</body>
+</html>
