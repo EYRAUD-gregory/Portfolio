@@ -108,19 +108,6 @@
                 </div>
             </div>
             {% endfor %}
-
-
-            <!-- Modale pour afficher les détails du projet -->
-            <div id="projectModal" class="w3-modal w3-animate-opacity">
-                <div class="w3-modal-content">
-                    <span class="close-button" onclick="closeModal()">&times;</span>
-                    <h3 id="modalTitle"></h3>
-                    <p id="modalDescription"></p>
-                    <p id="modalStartDate"></p>
-                    <p id="modalEndDate"></p>
-                </div>
-            </div>
-
         </div>
     </div>
 
@@ -151,6 +138,18 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Modale pour afficher les détails du projet -->
+    <div id="projectModal" class="w3-modal w3-animate-opacity">
+        <div class="w3-modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+            <p id="modalStartDate"></p>
+            <p id="modalEndDate"></p>
+        </div>
+    </div>
+
 </div>
 
 <!-- Lien vers le script JavaScript externe -->

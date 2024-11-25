@@ -116,9 +116,19 @@ function openModal(button) {
     document.getElementById("modalTitle").textContent = title;
     document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici pour traiter le texte comme du HTML
 
-    if (endDate && endDate){
+    // Gérer l'affichage des dates uniquement si elles sont définies
+    if (startDate) {
         document.getElementById("modalStartDate").innerHTML = "<b>Date de début : </b>" + startDate;
+        document.getElementById("modalStartDate").style.display = "block"; // Afficher l'élément s'il est caché
+    } else {
+        document.getElementById("modalStartDate").style.display = "none"; // Cacher l'élément
+    }
+
+    if (endDate) {
         document.getElementById("modalEndDate").innerHTML = "<b>Date de fin : </b>" + endDate;
+        document.getElementById("modalEndDate").style.display = "block"; // Afficher l'élément s'il est caché
+    } else {
+        document.getElementById("modalEndDate").style.display = "none"; // Cacher l'élément
     }
 
     // Afficher la modale
