@@ -5,11 +5,22 @@ from django.urls import path
 from django.utils.html import format_html
 
 # Register your models here.
-from .models import Profile, Formation, Project, ProjectIdea
+from .models import Profile, Formation, Project, ProjectIdea, Category, Skill
 
 admin.site.register(Profile)
 admin.site.register(Project)
 admin.site.register(Formation)
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'description')
+    list_filter = ('category',)
 
 
 class ProjectIdeasAdmin(admin.ModelAdmin):

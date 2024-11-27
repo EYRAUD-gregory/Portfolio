@@ -58,3 +58,20 @@ class ProjectIdea(models.Model):
             ending_date=ending_date
         )
         return project
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, related_name='skills', on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
