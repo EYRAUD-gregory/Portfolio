@@ -23,11 +23,15 @@
         <i class="fa fa-graduation-cap w3-xxlarge"></i>
         <p>FORMATIONS</p>
     </a>
+    <a href="#competences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+        <i class="fa fa-cube w3-xxlarge"></i>
+        <p>COMPÉTENCES</p>
+    </a>
     <a href="#experiences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
         <i class="fa fa-suitcase w3-xxlarge"></i>
         <p>EXPÉRIENCES</p>
     </a>
-    <a href="#MES PETITES IDÉES" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+    <a href="#idees_en_cours" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
         <i class="fa fa-eye w3-xxlarge"></i>
         <p>PROJETS EN COURS ET IDÉES</p>
     </a>
@@ -42,6 +46,7 @@
   <span class="burger-menu" onclick="toggleMenu()">☰</span>
     <a href="#main" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">ACCUEIL</a>
     <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
+    <a href="#competences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">COMPÉTENCES</a>
     <a href="#experiences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">EXPÉRIENCES</a>
     <a href="#idees_en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS ET IDÉES</a>
     <a href="#idées" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange"></a>
@@ -77,6 +82,25 @@
                     <p>{{ formation.starting_date }} - {{ formation.ending_date }}</p>
                     <p>{{ formation.description }}</p>
                 </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="competences" class="skills-section">
+        <h2>Mes Compétences</h2>
+        <div class="skills-grid">
+            {% for category in categories %}
+            <div class="skill-card">
+                <div class="icon-wrapper">
+                    <i class="skill-icon fa fa-code"></i> <!-- Exemple avec FontAwesome -->
+                </div>
+                <h3 class="category-title">{{ category.name }}</h3>
+                <p class="skill-description">
+                    {% for skill in category.skills.all %}
+                        {{ skill.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
             </div>
             {% endfor %}
         </div>

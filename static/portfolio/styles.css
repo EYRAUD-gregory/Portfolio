@@ -358,6 +358,87 @@ h2:hover::after {
     }
 }
 
+/* Section compétences pleine page */
+.skills-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Grille pour les compétences */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Fixe à 5 colonnes */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center; /* Centrer la grille */
+}
+
+
+/* Cartes de compétences */
+.skill-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    min-height: 150px; /* Hauteur minimale */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Icône */
+.icon-wrapper {
+    font-size: 2.5rem;
+    color: #ff5722;
+    margin-bottom: 10px;
+}
+
+/* Titre de catégorie */
+.category-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Description des compétences */
+.skill-description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .skills-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur des écrans moyens */
+    }
+}
+
+@media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur des écrans petits */
+    }
+}
+
+@media (max-width: 480px) {
+    .skills-grid {
+        grid-template-columns: 1fr; /* 1 colonne sur les très petits écrans */
+    }
+}
+
 .image-container {
     width: 100%;
     height: 200px; /* Hauteur fixe pour uniformiser la taille */
