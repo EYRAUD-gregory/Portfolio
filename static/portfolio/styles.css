@@ -560,14 +560,6 @@ html, body  {
     text-align: center;
 }
 
-.contact-section h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #ff4500, #ff6347);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
 .contact-form {
     max-width: 600px;
     margin: 0 auto;
@@ -646,25 +638,48 @@ html, body  {
     font-size: 1em;
 }
 
-.social-links {
-    margin-top: 20px;
+.footer {
+    background-color: #1e1e2f;
+    color: white;
     text-align: center;
+    padding: 20px;
 }
 
-.social-links a {
-    margin: 0 10px;
-    display: inline-block;
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.social-links img.social-icon {
-    width: 30px; /* Taille des icônes */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.footer-links a {
+    color: #ff6347;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.social-links {
+    margin-top: 10px;
+}
+
+.social-links img {
+    width: 30px;
     height: 30px;
-    object-fit: contain; /* Garde les proportions de l'image */
-    margin: 0 10px; /* Espacement entre les icônes */
+    margin: 0 10px;
     transition: transform 0.3s;
-    vertical-align: middle; /* Aligne les icônes correctement */
 }
 
-.social-links img.social-icon:hover {
-    transform: scale(1.2); /* Animation au survol */
+.social-links img:hover {
+    transform: scale(1.2);
 }
+
