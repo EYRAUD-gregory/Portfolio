@@ -552,3 +552,119 @@ body {
 html, body  {
     scroll-behavior: smooth;
 }
+
+.contact-section {
+    padding: 50px;
+    background: #1e1e2f; /* Couleur de fond sombre */
+    color: white;
+    text-align: center;
+}
+
+.contact-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #ff4500, #ff6347);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ff6347;
+    border-radius: 5px;
+    background: #2b2b3d;
+    color: white;
+}
+
+.contact-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.contact-form input:focus, .contact-form textarea:focus {
+    outline: none;
+    border-color: #ff4500;
+}
+
+.contact-form .form-group input[type="checkbox"] {
+    width: 18px; /* Taille de la case */
+    height: 18px;
+    accent-color: #ff4500; /* Couleur personnalisée de la case à cocher */
+    margin-right: 10px; /* Espacement avec le texte */
+}
+
+.contact-form .form-group label[for="cc_myself"] {
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-submit {
+    background: linear-gradient(90deg, #ff4500, #ff6347);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.btn-submit:hover {
+    background: #ff4500;
+}
+
+.messages {
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+}
+
+.alert {
+    background: #ff6347;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.social-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.social-links a {
+    margin: 0 10px;
+    display: inline-block;
+}
+
+.social-links img.social-icon {
+    width: 30px; /* Taille des icônes */
+    height: 30px;
+    object-fit: contain; /* Garde les proportions de l'image */
+    margin: 0 10px; /* Espacement entre les icônes */
+    transition: transform 0.3s;
+    vertical-align: middle; /* Aligne les icônes correctement */
+}
+
+.social-links img.social-icon:hover {
+    transform: scale(1.2); /* Animation au survol */
+}

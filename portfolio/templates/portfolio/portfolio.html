@@ -174,11 +174,62 @@
         </div>
     </div>
 
+
+    <section id="contact" class="contact-section">
+        <h2>Contactez-moi</h2>
+        <!-- Message de confirmation -->
+        {% if confirmation_message %}
+            <div class="alert">{{ confirmation_message }}</div>
+        {% endif %}
+        <!-- Formulaire -->
+        <form method="post" action="" class="contact-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Nom *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="societe">Société</label>
+                <input type="text" id="societe" name="societe">
+            </div>
+            <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input type="tel" id="telephone" name="telephone">
+            </div>
+            <div class="form-group">
+                <label for="sender">Email *</label>
+                <input type="email" id="sender" name="sender" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Sujet *</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cc_myself">M'envoyer une copie</label>
+                <input type="checkbox" id="cc_myself" name="cc_myself">
+            </div>
+            <button type="submit" class="btn-submit">Envoyer</button>
+        </form>
+
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/gr%C3%A9gory-eyraud-6755a81bb/" target="_blank">
+                <img src="{% static 'images/linkedin.png' %}" alt="LinkedIn" class="social-icon">
+            </a>
+            <a href="https://github.com/EYRAUD-gregory" target="_blank">
+                <img src="{% static 'images/github.png' %}" alt="GitHub" class="social-icon">
+            </a>
+        </div>
+    </section>
+
 </div>
 
 <!-- Lien vers le script JavaScript externe -->
 <script src="{% static 'portfolio/script.js' %}"></script>
 
-
 </body>
+
 </html>
