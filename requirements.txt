@@ -6,3 +6,5 @@ psycopg2-binary
 dj-database-url
 python-decouple
 whitenoise
+cloudinary
+django-cloudinary-storage
