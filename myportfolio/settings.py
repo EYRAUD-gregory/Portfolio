@@ -173,3 +173,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuration pour les fichiers médias
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://portfolio-production-9275.up.railway.app/",
+]
+
+CSRF_COOKIE_SECURE = True  # Active pour les connexions HTTPS
