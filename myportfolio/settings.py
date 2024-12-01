@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+import cloudinary
 from dotenv import load_dotenv
 import dj_database_url
 
@@ -177,8 +179,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-CLOUDINARY = {
-    'cloud_name': os.getenv('CLOUD_NAME'),
-    'api_key': os.getenv('CLOUD_API_KEY'),
-    'api_secret': os.getenv('CLOUD_API_SECRET'),
-}
+cloudinary.config(
+    cloud_name=os.getenv('CLOUD_NAME'),
+    api_key=os.getenv('CLOUD_API_KEY'),
+    api_secret=os.getenv('CLOUD_API_SECRET'),
+)
