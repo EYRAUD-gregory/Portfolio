@@ -56,3 +56,7 @@ def portfolio_view(request):
                                                         'formations': formations,
                                                         'project_ideas': project_ideas,
                                                         'categories': categories})
+
+
+def privacy_policy(request):
+    return render(request, 'portfolio/politique_confidentialite.html')
