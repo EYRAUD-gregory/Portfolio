@@ -20,12 +20,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-05l@1-*kyzno$#(a_)_1*wvwk(b8i7ewhn$kxf@(c2!tma)7u-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -107,8 +104,8 @@ DATABASES = {
         'NAME': os.getenv("POSTGRES_DB"),
         'USER': os.getenv("POSTGRES_USER"),
         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-        'HOST': 'localhost',
-        #'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
+        #'HOST': 'localhost',
+        'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
         'PORT': 5432,
     }
 }
