@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
+import cloudinary
 
 # Charger les variables d’environnement à partir du fichier .env
 load_dotenv()
@@ -35,7 +36,8 @@ ALLOWED_HOSTS = ["*"]
 
 
 # Serve les fichiers médias (images, etc.) en mode développement
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
+MEDIA_URL = ''
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Serve les fichiers statiques (comme les fichiers CSS et JS) en mode développement
@@ -46,6 +48,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'app/static')
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # Ici on définit le répertoire statique global
 ]
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 
 # Application definition
@@ -58,6 +66,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portfolio',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -103,17 +113,7 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 #}
 
 # Pour postgresql
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': os.getenv("POSTGRES_DB"),
-#        'USER': os.getenv("POSTGRES_USER"),
-#        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-#        #'HOST': 'localhost',
-#        'HOST': os.getenv("POSTGRES_HOST"),  # le nom du service dans docker-compose.yml
-#        'PORT': 5432,
-#    }
-#}
+
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -156,8 +156,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -172,3 +170,6 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Configuration pour les fichiers médias
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
