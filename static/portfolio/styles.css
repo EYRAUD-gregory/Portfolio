@@ -652,6 +652,11 @@ html, body  {
     color: white;
     text-align: center;
     padding: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
+    justify-content: center; /* Centrer les éléments */
+    align-items: center; /* Aligner verticalement */
+    gap: 10px; /* Espacement entre les éléments */
 }
 
 .footer-content {
@@ -666,6 +671,7 @@ html, body  {
     display: flex;
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap; /* Gérer le passage à la ligne */
 }
 
 .footer-links a {
