@@ -20,4 +20,4 @@ EXPOSE 8000
 
 # Commande pour démarrer le serveur Django
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD ["gunicorn", "--bind", "localhost:8000", "myportfolio.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myportfolio.wsgi:application"]
