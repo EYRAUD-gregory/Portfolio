@@ -212,7 +212,13 @@
                 <label for="cc_myself">M'envoyer une copie</label>
                 <input type="checkbox" id="cc_myself" name="cc_myself">
             </div>
-            <button type="submit" class="btn-submit">Envoyer</button>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="consent" name="consent" required>
+                    J'accepte que mes données soient utilisées conformément à la <a href="/politique-de-confidentialite/" target="_blank">politique de confidentialité</a>.
+                </label>
+            </div>
+            <button type="submit" class="btn-submit" id="submit-button" disabled>Envoyer</button>
         </form>
     </section>
 
@@ -241,6 +247,12 @@
             <a href="https://github.com/EYRAUD-gregory" target="_blank">
                 <img src="{% static 'images/github.png' %}" alt="GitHub" class="social-icon">
             </a>
+        </div>
+        <div class="legal-section">
+            <p>
+                Ce site utilise un formulaire pour collecter des données personnelles dans le cadre de vos demandes.
+                Consultez la <a href="{% url 'privacy_policy' %}">politique de confidentialité</a> pour en savoir plus.
+            </p>
         </div>
     </div>
 </footer>

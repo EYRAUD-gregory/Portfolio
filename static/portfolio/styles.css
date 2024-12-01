@@ -619,6 +619,15 @@ html, body  {
     font-size: 1em;
 }
 
+/* Bouton désactivé */
+.btn-submit:disabled {
+    background-color: #ccc; /* Grisé */
+    color: #666; /* Texte atténué */
+    cursor: not-allowed; /* Curseur interdit */
+    border: 1px solid #aaa; /* Bordure plus claire */
+    opacity: 0.6; /* Transparence pour renforcer l'effet */
+}
+
 .btn-submit:hover {
     background: #ff4500;
 }

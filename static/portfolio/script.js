@@ -186,6 +186,13 @@ function toggleMenu() {
     }
 }
 
+// Désactiver/activer le bouton en fonction de la case
+const checkbox = document.getElementById('consent');
+const submitButton = document.getElementById('submit-button');
+checkbox.addEventListener('change', () => {
+    submitButton.disabled = !checkbox.checked;
+});
+
 
 
 
