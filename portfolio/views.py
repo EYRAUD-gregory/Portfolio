@@ -60,3 +60,7 @@ def portfolio_view(request):
 
 def privacy_policy(request):
     return render(request, 'portfolio/politique_confidentialite.html')
+
+
+def mentions_legales(request):
+    return render(request, 'portfolio/mentions_legales.html')
