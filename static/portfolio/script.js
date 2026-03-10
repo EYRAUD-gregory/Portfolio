@@ -2,7 +2,7 @@
     Ritch Rivia: https://www.youtube.com/watch?v=161yxE3-00o&ab_channel=RitchRivia
 */
 document.addEventListener("DOMContentLoaded", function() {
-    const textArray = ["Ingénieur IA", "Data Scientist/Engineer/Analyst", "Développeur Python"];
+    const textArray = ["IA Générative & Agentique", "Bases de données graphes", "Python", "GraphRAG"];
     const typingSpeed = 100;
     const erasingSpeed = 50;
     const initialDelay = 200;
@@ -192,9 +192,3 @@ const submitButton = document.getElementById('submit-button');
 checkbox.addEventListener('change', () => {
     submitButton.disabled = !checkbox.checked;
 });
-
-
-
-
-
-

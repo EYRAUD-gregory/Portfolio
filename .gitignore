@@ -20,8 +20,9 @@ docker-compose.override.yml
 .idea/
 .vscode/
 
-# Fichiers de base de données SQLite (si vous utilisez SQLite en développement)
+# Fichiers de base de données
 db.sqlite3
+.sql
 
 # Fichiers de migrations
 migrations/
@@ -30,13 +31,11 @@ migrations/
 *.coverage
 *.tox
 *.nox
-*.coverage
 nosetests.xml
 coverage.xml
 *.hypothesis/
 
 # Fichiers de configuration pour le déploiement (par exemple Gunicorn ou Nginx)
-*.log
 *.pid
 
 # Dossier de fichiers statiques collectés par Django
