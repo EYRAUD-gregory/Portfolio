@@ -75,3 +75,14 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Experience(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+    starting_date = models.DateField(null=True, blank=True)
+    ending_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title

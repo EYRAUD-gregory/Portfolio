@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 
 from .forms import ContactForm
 # Create your views here.
-from .models import Profile, Formation, Project, ProjectIdea, Category
+from .models import Profile, Formation, Project, ProjectIdea, Category, Experience
 
 
 def portfolio_view(request):
@@ -11,6 +11,7 @@ def portfolio_view(request):
     formations = Formation.objects.all().order_by('-starting_date')
     projects = Project.objects.all().order_by('-starting_date')
     project_ideas = ProjectIdea.objects.all()
+    experiences = Experience.objects.all().order_by('-starting_date')
     categories = Category.objects.prefetch_related('skills').all()
 
     confirmation_message = None  # Initialisation du message de confirmation
@@ -55,6 +56,7 @@ def portfolio_view(request):
                                                         'projects': projects,
                                                         'formations': formations,
                                                         'project_ideas': project_ideas,
+                                                        'experiences': experiences,
                                                         'categories': categories})
 
 

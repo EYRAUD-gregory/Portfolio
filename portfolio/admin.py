@@ -5,11 +5,12 @@ from django.urls import path
 from django.utils.html import format_html
 
 # Register your models here.
-from .models import Profile, Formation, Project, ProjectIdea, Category, Skill
+from .models import Profile, Formation, Project, ProjectIdea, Category, Skill, Experience
 
 admin.site.register(Profile)
 admin.site.register(Project)
 admin.site.register(Formation)
+admin.site.register(Experience)
 
 
 @admin.register(Category)
@@ -39,7 +40,7 @@ class ProjectIdeasAdmin(admin.ModelAdmin):
 
     def convert_to_project(self, request, idea_id):
         from django.shortcuts import get_object_or_404, redirect
-        idea = get_object_or_404(ProjectIdeas, pk=idea_id)
+        idea = get_object_or_404(ProjectIdea, pk=idea_id)
 
         if request.method == 'POST':
             form = self.ConversionForm(request.POST)

@@ -31,6 +31,10 @@
                 <i class="fa fa-suitcase w3-xxlarge"></i>
                 <p>EXPÉRIENCES</p>
             </a>
+            <a href="#projects" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
+                <i class="fa fa-rocket w3-xxlarge"></i>
+                <p>PROJETS</p>
+            </a>
             <a href="#idees_en_cours" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
                 <i class="fa fa-eye w3-xxlarge"></i>
                 <p>PROJETS EN COURS ET IDÉES</p>
@@ -48,6 +52,7 @@
             <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
             <a href="#competences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">COMPÉTENCES</a>
             <a href="#experiences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">EXPÉRIENCES</a>
+            <a href="#projects" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS</a>
             <a href="#idees_en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS ET IDÉES</a>
             <a href="#contact" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">CONTACT</a>
         </div>
@@ -105,10 +110,37 @@
                 </div>
             </section>
 
-
-            <!-- Projects Section -->
+            <!-- Experiences Section -->
             <div class="w3-container w3-padding-32" id="experiences">
                 <h2>Mes expériences</h2>
+                <div class="w3-row-padding">
+                    {% for experience in experiences %}
+                    <div class="w3-third w3-margin-bottom">
+                        <div class="w3-card-4 project-card">
+                            <div class="experience-image-container">
+                                <img src="{{ experience.image.url }}" alt="{{ experience.title }}" class="experience-image">
+                                <div class="overlay">
+                                    <span class="w3-large">{{ experience.title }}</span>
+                                    <button
+                                        class="w3-button w3-circle w3-teal experience-button"
+                                        data-title="{{ experience.title }}"
+                                        data-description="{{ experience.description|escapejs }}"
+                                        data-start-date="{{ experience.starting_date }}"
+                                        data-end-date="{{ experience.ending_date }}"
+                                        onclick="openModal(this)">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="w3-container w3-padding-32" id="projects">
+                <h2>Mes projets</h2>
                 <div class="w3-row-padding">
                     {% for project in projects %}
                     <div class="w3-third w3-margin-bottom">
