@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
-import cloudinary
 
 # Charger les variables d’environnement à partir du fichier .env
 load_dotenv()
@@ -49,13 +48,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",  # Ici on définit le répertoire statique global
 ]
 
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET")
-)
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -66,8 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portfolio',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -170,9 +160,6 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Configuration pour les fichiers médias
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://portfolio-production-9275.up.railway.app/",
