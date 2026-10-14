@@ -164,12 +164,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Console par défaut : en dev, les mails s'affichent dans le terminal au lieu de partir
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Adresse email utilisée pour envoyer
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Mot de passe de cette adresse
-EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Compte SMTP utilisé pour envoyer
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Mot de passe de ce compte
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', default=True)
 EMAIL_USE_SSL = False
+
+# Formulaire de contact : expéditeur = adresse du compte SMTP, destinataire = la mienne
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+CONTACT_RECIPIENT = os.getenv('CONTACT_RECIPIENT')
 
 STORAGES = {
     'default': {

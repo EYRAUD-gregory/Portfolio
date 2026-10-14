@@ -1,5 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 from .forms import ContactForm
 # Create your views here.
@@ -26,7 +27,6 @@ def portfolio_view(request):
             sender = form.cleaned_data["sender"]
             societe = form.cleaned_data.get("societe", "Non spécifié")  # Valeur par défaut
             telephone = form.cleaned_data.get("telephone", "Non spécifié")  # Valeur par défaut
-            cc_myself = form.cleaned_data["cc_myself"]
 
             # Ajout des informations supplémentaires au message
             full_message = (
@@ -38,13 +38,15 @@ def portfolio_view(request):
                 f"Envoyé par : {name} ({sender})\n"
             )
 
-            # Destinataires
-            recipients = ["gregory.eyraud@gmail.com"]
-            if cc_myself:
-                recipients.append(sender)
-
-            # Envoi de l'email
-            send_mail(subject, full_message, sender, recipients, fail_silently=False)
+            # Envoi de l'email : l'adresse du visiteur ne sert qu'à répondre (reply_to),
+            # jamais de destinataire ni d'expéditeur (sinon : relais ouvert)
+            EmailMessage(
+                subject=subject,
+                body=full_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.CONTACT_RECIPIENT],
+                reply_to=[sender],
+            ).send(fail_silently=False)
 
             confirmation_message = "Votre message a été envoyé avec succès !"
             form = ContactForm()

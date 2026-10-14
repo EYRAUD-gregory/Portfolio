@@ -628,13 +628,6 @@ html, body  {
     margin-right: 10px; /* Espacement avec le texte */
 }
 
-.contact-form .form-group label[for="cc_myself"] {
-    display: inline-flex;
-    align-items: center;
-    font-weight: bold;
-    cursor: pointer;
-}
-
 .btn-submit {
     background: linear-gradient(90deg, #ff4500, #ff6347);
     color: white;

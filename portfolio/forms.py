@@ -8,4 +8,3 @@ class ContactForm(forms.Form):
     sender = forms.EmailField(label="Votre email")
     societe = forms.CharField(max_length=100, required=False, label="Société")  # Champ facultatif
     telephone = forms.CharField(max_length=20, required=False, label="Téléphone")  # Champ facultatif
-    cc_myself = forms.BooleanField(required=False, label="Recevoir une copie")
