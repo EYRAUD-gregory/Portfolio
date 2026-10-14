@@ -22,6 +22,15 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def env_bool(name, default=False):
+    return os.getenv(name, str(default)).strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def env_list(name):
+    # Valeurs séparées par des virgules, espaces ignorés
+    return [v.strip() for v in os.getenv(name, '').split(',') if v.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -29,19 +38,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env_bool('DJANGO_DEBUG')
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS')
+
+# Schéma + hôte, sans slash final (ex : https://exemple.fr)
+CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS')
 
 
-# Serve les fichiers médias (images, etc.) en mode développement
-#MEDIA_URL = '/media/'
-MEDIA_URL = ''
+# Fichiers médias (images uploadées via l'admin)
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Serve les fichiers statiques (comme les fichiers CSS et JS) en mode développement
+# Fichiers statiques, rassemblés par collectstatic dans STATIC_ROOT
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'app/static')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Liste des répertoires dans lesquels Django cherchera les fichiers statiques
 STATICFILES_DIRS = [
@@ -62,13 +73,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ajoutez cette ligne
 ]
 
 ROOT_URLCONF = 'myportfolio.urls'
@@ -151,7 +162,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# Console par défaut : en dev, les mails s'affichent dans le terminal au lieu de partir
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Adresse email utilisée pour envoyer
@@ -159,13 +171,18 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Mot de passe de cette 
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://portfolio-production-9275.up.railway.app/",
-]
-
-CSRF_COOKIE_SECURE = True  # Active pour les connexions HTTPS
-
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# HTTPS : actif hors DEBUG. Le reverse proxy termine TLS et transmet X-Forwarded-Proto.
+SECURE_SSL_REDIRECT = env_bool('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG)
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
