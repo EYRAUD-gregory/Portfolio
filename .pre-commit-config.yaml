@@ -1,0 +1,11 @@
+# Bloque tout commit dont les fichiers stagés contiennent un secret.
+# Prérequis : binaire gitleaks installé (winget install Gitleaks.Gitleaks).
+# Activation après un clone : pre-commit install
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks-system
+        # Absent de la définition amont de ce hook (présent sur les variantes golang/docker) :
+        # gitleaks lit lui-même l'index, il refuse la liste de fichiers.
+        pass_filenames: false

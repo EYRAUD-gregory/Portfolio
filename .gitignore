@@ -9,6 +9,7 @@ __pycache__/
 venv/
 env/
 .venv/
+.env
 *.env
 
 # Fichiers spécifiques à Docker
@@ -22,10 +23,8 @@ docker-compose.override.yml
 
 # Fichiers de base de données
 db.sqlite3
-.sql
-
-# Fichiers de migrations
-migrations/
+*.sql
+sauvegardes/
 
 # Fichiers de tests
 *.coverage
