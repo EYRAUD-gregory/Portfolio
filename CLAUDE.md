@@ -29,7 +29,8 @@ rien de ce qui est écrit ici, ni dans un commit, ne doit révéler un secret ou
 5. **ASGI** : lancement uvicorn, Dockerfile et compose alignés.
 6. **Formulaire de contact** (voir invariants) : `EmailMessage`, expéditeur transactionnel configuré par
    l'env, `cc_myself` supprimé du form, de la vue et du template.
-7. **Compose local** : volume Postgres **monté** (`/var/lib/postgresql/data`), volume médias monté,
+7. **Compose local** : image `postgres:18` épinglée, volume Postgres **monté** sur `/var/lib/postgresql`
+   (pas `/data` : depuis la 18, l'image range ses données dans `18/docker` et refuse ce point de montage), volume médias monté,
    `env_file`, `collectstatic` au démarrage du conteneur (pas au build). Aucun `ports:` sur `db`.
 8. **Purge** : `main.py` (gabarit PyCharm), `static/admin/` committé (régénéré par `collectstatic`).
 
