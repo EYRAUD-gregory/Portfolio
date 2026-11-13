@@ -1,7 +1,7 @@
 from django.core import mail
 from django.test import TestCase, override_settings
 
-from .models import Project
+from .models import Experience, Project, ProjectIdea
 
 
 @override_settings(
@@ -63,3 +63,31 @@ class ProjectModalTests(TestCase):
         self.assertNotContains(response, 'u0022')
         # Une date absente ne doit pas s'afficher « None » dans la modale
         self.assertContains(response, 'data-start-date=""')
+
+
+@override_settings(
+    STORAGES={
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    },
+)
+class PagesTests(TestCase):
+    def test_pages_render_with_empty_database(self):
+        # Base vide : pas de Profile, aucune section remplie
+        for url in ('/', '/politique-de-confidentialite/', '/mentions-legales/'):
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_home_renders_items_without_image(self):
+        # L'image est facultative : son absence ne doit pas faire tomber la page
+        Project.objects.create(title='Projet sans image', description='Description')
+        Experience.objects.create(title='Expérience sans image', description='Description')
+        ProjectIdea.objects.create(title='Idée sans image', description='Description')
+
+        response = self.client.get('/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Projet sans image')
+        self.assertContains(response, 'Expérience sans image')
+        self.assertContains(response, 'Idée sans image')
+        self.assertNotContains(response, '<img src="/media/')

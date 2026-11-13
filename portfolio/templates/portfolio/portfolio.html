@@ -118,7 +118,7 @@
                     <div class="w3-third w3-margin-bottom">
                         <div class="w3-card-4 project-card">
                             <div class="experience-image-container">
-                                <img src="{{ experience.image.url }}" alt="{{ experience.title }}" class="experience-image">
+                                {% if experience.image %}<img src="{{ experience.image.url }}" alt="{{ experience.title }}" class="experience-image">{% endif %}
                                 <div class="overlay">
                                     <span class="w3-large">{{ experience.title }}</span>
                                     <button
@@ -145,7 +145,7 @@
                     <div class="w3-third w3-margin-bottom">
                         <div class="w3-card-4 project-card">
                             <div class="project-image-container">
-                                <img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">
+                                {% if project.image %}<img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">{% endif %}
                                 <div class="overlay">
                                     <span class="w3-large">{{ project.title }}</span>
                                     <button
@@ -172,7 +172,7 @@
                     <div class="w3-third w3-margin-bottom">
                         <div class="w3-card-4 project-card">
                             <div class="project-image-container">
-                                <img src="{{ project_idea.image.url }}" alt="{{ project_idea.title }}" class="project-image">
+                                {% if project_idea.image %}<img src="{{ project_idea.image.url }}" alt="{{ project_idea.title }}" class="project-image">{% endif %}
                                 <div class="overlay">
                                     <span class="w3-large">{{ project_idea.title }}</span>
                                     <button
