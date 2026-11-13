@@ -671,6 +671,13 @@ html, body  {
     font-size: 1em;
 }
 
+/* Erreur de validation affichée sous un champ du formulaire */
+.field-error {
+    color: #b00020;
+    font-size: 0.9em;
+    margin: 5px 0 0;
+}
+
 .footer {
     background-color: #1e1e2f;
     color: white;

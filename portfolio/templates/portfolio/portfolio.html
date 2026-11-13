@@ -203,42 +203,50 @@
 
             <section id="contact" class="contact-section">
                 <h2>Contactez-moi</h2>
-                <!-- Message de confirmation -->
-                {% if confirmation_message %}
-                    <div class="alert">{{ confirmation_message }}</div>
-                {% endif %}
-                <!-- Formulaire -->
-                <form method="post" action="" class="contact-form">
+                <!-- Confirmation d'envoi (affichée après la redirection) -->
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+                <!-- Formulaire : l'ancre ramène sur cette section si la page revient avec des erreurs -->
+                <form method="post" action="#contact" class="contact-form">
                     {% csrf_token %}
+                    {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     <div class="form-group">
                         <label for="name">Nom *</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" value="{{ form.name.value|default_if_none:'' }}" required>
+                        {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="societe">Société</label>
-                        <input type="text" id="societe" name="societe">
+                        <input type="text" id="societe" name="societe" value="{{ form.societe.value|default_if_none:'' }}">
+                        {% for error in form.societe.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="telephone">Téléphone</label>
-                        <input type="tel" id="telephone" name="telephone">
+                        <input type="tel" id="telephone" name="telephone" value="{{ form.telephone.value|default_if_none:'' }}">
+                        {% for error in form.telephone.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="sender">Email *</label>
-                        <input type="email" id="sender" name="sender" required>
+                        <input type="email" id="sender" name="sender" value="{{ form.sender.value|default_if_none:'' }}" required>
+                        {% for error in form.sender.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="subject">Sujet *</label>
-                        <input type="text" id="subject" name="subject" required>
+                        <input type="text" id="subject" name="subject" value="{{ form.subject.value|default_if_none:'' }}" required>
+                        {% for error in form.subject.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="message">Message *</label>
-                        <textarea id="message" name="message" required></textarea>
+                        <textarea id="message" name="message" required>{{ form.message.value|default_if_none:'' }}</textarea>
+                        {% for error in form.message.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="consent" name="consent" required>
-                            J'accepte que mes données soient utilisées conformément à la <a href="/politique-de-confidentialite/" target="_blank">politique de confidentialité</a>.
+                            J'accepte que mes données soient utilisées conformément à la <a href="{% url 'privacy_policy' %}" target="_blank">politique de confidentialité</a>.
                         </label>
+                        {% for error in form.consent.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <button type="submit" class="btn-submit" id="submit-button" disabled>Envoyer</button>
                 </form>
