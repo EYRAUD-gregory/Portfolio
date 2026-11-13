@@ -6,9 +6,7 @@
         <title>{{profile.name}} - Portfolio</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{% static 'vendor/w3.css' %}">
         <link rel="stylesheet" href="{% static 'portfolio/styles.css' %}">
     </head>
     <body class="w3-sand">
@@ -16,31 +14,31 @@
         <!-- Icon Bar (Sidebar - hidden on small screens) -->
         <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center my-custom-red">
             <a href="#main" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-home w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#home"></use></svg>
                 <p>ACCUEIL</p>
             </a>
             <a href="#formations" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-graduation-cap w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#graduation-cap"></use></svg>
                 <p>FORMATIONS</p>
             </a>
             <a href="#competences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-cube w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#cube"></use></svg>
                 <p>COMPÉTENCES</p>
             </a>
             <a href="#experiences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-suitcase w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#suitcase"></use></svg>
                 <p>EXPÉRIENCES</p>
             </a>
             <a href="#projects" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-rocket w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#rocket"></use></svg>
                 <p>PROJETS</p>
             </a>
             <a href="#idees_en_cours" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-eye w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#eye"></use></svg>
                 <p>PROJETS EN COURS ET IDÉES</p>
             </a>
             <a href="#contact" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <i class="fa fa-envelope w3-xxlarge"></i>
+                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#envelope"></use></svg>
                 <p>CONTACT</p>
             </a>
         </nav>
@@ -97,7 +95,7 @@
                     {% for category in categories %}
                     <div class="skill-card">
                         <div class="icon-wrapper">
-                            <i class="skill-icon fa fa-code"></i> <!-- Exemple avec FontAwesome -->
+                            <svg class="icon skill-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#code"></use></svg>
                         </div>
                         <h3 class="category-title">{{ category.name }}</h3>
                         <p class="skill-description">
@@ -127,7 +125,7 @@
                                     data-start-date="{{ experience.starting_date|default_if_none:'' }}"
                                     data-end-date="{{ experience.ending_date|default_if_none:'' }}">
                                     <span class="w3-large">{{ experience.title }}</span>
-                                    <i class="fa fa-plus overlay-icon"></i>
+                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
                                 </button>
                             </div>
                         </div>
@@ -153,7 +151,7 @@
                                     data-start-date="{{ project.starting_date|default_if_none:'' }}"
                                     data-end-date="{{ project.ending_date|default_if_none:'' }}">
                                     <span class="w3-large">{{ project.title }}</span>
-                                    <i class="fa fa-plus overlay-icon"></i>
+                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
                                 </button>
                             </div>
                         </div>
@@ -177,7 +175,7 @@
                                     data-title="{{ project_idea.title }}"
                                     data-description="{{ project_idea.description }}">
                                     <span class="w3-large">{{ project_idea.title }}</span>
-                                    <i class="fa fa-plus overlay-icon"></i>
+                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
                                 </button>
                             </div>
                         </div>

@@ -198,6 +198,15 @@ class PagesTests(TestCase):
         self.assertContains(response, 'Idée sans image')
         self.assertNotContains(response, '<img src="/media/')
 
+    def test_home_loads_no_third_party_stylesheet_or_font(self):
+        # Feuilles de style, police et icônes sont servies par le site lui-même
+        response = self.client.get('/')
+
+        for host in ('w3schools.com', 'googleapis.com', 'gstatic.com', 'cdnjs.cloudflare.com'):
+            with self.subTest(host=host):
+                self.assertNotContains(response, host)
+        self.assertContains(response, '/static/vendor/font-awesome/icons.svg#home')
+
 
 @override_settings(TURNSTILE_SITE_KEY='cle-publique-de-test', TURNSTILE_SECRET_KEY='cle-secrete-de-test')
 class TurnstileVerificationTests(SimpleTestCase):
