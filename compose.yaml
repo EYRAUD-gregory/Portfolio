@@ -1,53 +1,29 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
-
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
-
-
 services:
   web:
     build: .
+    env_file: .env
+    # Boucle locale seulement : Docker publie les ports en contournant le pare-feu de l'hôte
     ports:
-      - "8000:8000"
-    environment:
-      DJANGO_SETTINGS_MODULE: "myportfolio.settings"
+      - "127.0.0.1:8000:8000"
     volumes:
-      - .:/app
-      - ./staticfiles:/app/staticfiles
-
-
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker compose up`.
+      - ./media:/app/media
     depends_on:
-       db:
-         condition: service_healthy
+      db:
+        condition: service_healthy
+
   db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    image: postgres:18.7
+    restart: unless-stopped
+    env_file: .env
+    # Aucun port publié : seul le service web atteint la base, par le réseau du compose
     volumes:
-          - ./sauvegardes:/sauvegardes
-    ports:
-      - "5432:5432"
+      # Depuis la 18, l'image range ses données dans 18/docker sous ce point de montage
+      - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
       interval: 1s
       timeout: 5s
       retries: 10
 
 volumes:
   postgres_data:
-  media:
-
