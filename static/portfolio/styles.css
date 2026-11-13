@@ -505,6 +505,11 @@ h2:hover::after {
     display: block;
 }
 
+/* Les retours à la ligne saisis dans l'admin sont conservés à l'affichage */
+#modalDescription {
+    white-space: pre-line;
+}
+
 .close-button {
     font-size: 24px;
     font-weight: bold;

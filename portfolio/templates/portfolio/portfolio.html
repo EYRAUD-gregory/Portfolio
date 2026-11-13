@@ -47,7 +47,7 @@
 
         <!-- Navbar on small screens (Hidden on medium and large screens) -->
         <div class="w3-top collapsed w3-hide-large w3-hide-medium w3-deep-orange" id="myNavbar">
-          <span class="burger-menu" onclick="toggleMenu()">☰</span>
+          <span class="burger-menu" id="burger-menu">☰</span>
             <a href="#main" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">ACCUEIL</a>
             <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
             <a href="#competences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">COMPÉTENCES</a>
@@ -124,10 +124,9 @@
                                     <button
                                         class="w3-button w3-circle w3-teal experience-button"
                                         data-title="{{ experience.title }}"
-                                        data-description="{{ experience.description|escapejs }}"
-                                        data-start-date="{{ experience.starting_date }}"
-                                        data-end-date="{{ experience.ending_date }}"
-                                        onclick="openModal(this)">
+                                        data-description="{{ experience.description }}"
+                                        data-start-date="{{ experience.starting_date|default_if_none:'' }}"
+                                        data-end-date="{{ experience.ending_date|default_if_none:'' }}">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
@@ -152,10 +151,9 @@
                                     <button
                                         class="w3-button w3-circle w3-teal project-button"
                                         data-title="{{ project.title }}"
-                                        data-description="{{ project.description|escapejs }}"
-                                        data-start-date="{{ project.starting_date }}"
-                                        data-end-date="{{ project.ending_date }}"
-                                        onclick="openModal(this)">
+                                        data-description="{{ project.description }}"
+                                        data-start-date="{{ project.starting_date|default_if_none:'' }}"
+                                        data-end-date="{{ project.ending_date|default_if_none:'' }}">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
@@ -180,10 +178,7 @@
                                     <button
                                         class="w3-button w3-circle w3-teal project-button"
                                         data-title="{{ project_idea.title }}"
-                                        data-description="{{ project_idea.description|escapejs }}"
-                                        data-start-date="{{ project_idea.starting_date }}"
-                                        data-end-date="{{ project_idea.ending_date }}"
-                                        onclick="openModal(this)">
+                                        data-description="{{ project_idea.description }}">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </div>
@@ -197,11 +192,11 @@
             <!-- Modale pour afficher les détails du projet -->
             <div id="projectModal" class="w3-modal w3-animate-opacity">
                 <div class="w3-modal-content">
-                    <span class="close-button" onclick="closeModal()">&times;</span>
+                    <span class="close-button" id="modalClose">&times;</span>
                     <h3 id="modalTitle"></h3>
                     <p id="modalDescription"></p>
-                    <p id="modalStartDate"></p>
-                    <p id="modalEndDate"></p>
+                    <p id="modalStartDate"><b>Date de début : </b><span></span></p>
+                    <p id="modalEndDate"><b>Date de fin : </b><span></span></p>
                 </div>
             </div>
 

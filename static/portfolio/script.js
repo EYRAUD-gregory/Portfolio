@@ -105,41 +105,56 @@ init();
 
 
 
+// Affiche la description comme du texte. Seule exception : un lien <a href="http(s)://...">
+// saisi dans l'admin est reconstruit en élément <a>, son libellé restant du texte.
+function renderDescription(element, text) {
+    const linkPattern = /<a\s+href="(https?:\/\/[^"\s]+)"[^>]*>([\s\S]*?)<\/a>/g;
+    let lastIndex = 0;
+    let match;
+
+    element.textContent = '';
+    while ((match = linkPattern.exec(text)) !== null) {
+        element.append(text.slice(lastIndex, match.index));
+        const link = document.createElement('a');
+        link.href = match[1];
+        link.textContent = match[2];
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        element.append(link);
+        lastIndex = linkPattern.lastIndex;
+    }
+    element.append(text.slice(lastIndex));
+}
+
+// Affiche une date de la modale, ou masque la ligne si elle est absente
+function setModalDate(elementId, value) {
+    const line = document.getElementById(elementId);
+    line.querySelector('span').textContent = value || '';
+    line.style.display = value ? 'block' : 'none';
+}
+
 function openModal(button) {
-    // Récupère les informations du projet à partir des attributs data-*
-    var title = button.getAttribute("data-title");
-    var description =JSON.parse('"' + button.getAttribute("data-description").replace(/\\u000D\\u000A|\\u000D|\\u000A/g, "<br>") + '"'); // Remplacer les retours à la ligne par <br>
-    var startDate = button.getAttribute("data-start-date");
-    var endDate = button.getAttribute("data-end-date");
-
-    // Assigner les données aux éléments de la modale
-    document.getElementById("modalTitle").textContent = title;
-    document.getElementById("modalDescription").innerHTML = description; // Utilise innerHTML ici pour traiter le texte comme du HTML
-
-    // Gérer l'affichage des dates uniquement si elles sont définies
-    if (startDate) {
-        document.getElementById("modalStartDate").innerHTML = "<b>Date de début : </b>" + startDate;
-        document.getElementById("modalStartDate").style.display = "block"; // Afficher l'élément s'il est caché
-    } else {
-        document.getElementById("modalStartDate").style.display = "none"; // Cacher l'élément
-    }
-
-    if (endDate) {
-        document.getElementById("modalEndDate").innerHTML = "<b>Date de fin : </b>" + endDate;
-        document.getElementById("modalEndDate").style.display = "block"; // Afficher l'élément s'il est caché
-    } else {
-        document.getElementById("modalEndDate").style.display = "none"; // Cacher l'élément
-    }
+    // Les attributs data-* sont lus comme du texte, jamais interprétés comme du HTML.
+    // Les retours à la ligne de la description sont rendus par le CSS (white-space: pre-line).
+    document.getElementById('modalTitle').textContent = button.getAttribute('data-title');
+    renderDescription(document.getElementById('modalDescription'), button.getAttribute('data-description') || '');
+    setModalDate('modalStartDate', button.getAttribute('data-start-date'));
+    setModalDate('modalEndDate', button.getAttribute('data-end-date'));
 
     // Afficher la modale
-    document.getElementById("projectModal").style.display = "flex";
+    document.getElementById('projectModal').style.display = 'flex';
 }
 
 
 function closeModal() {
     // Masquer la modale
-    document.getElementById("projectModal").style.display = "none";
+    document.getElementById('projectModal').style.display = 'none';
 }
+
+document.querySelectorAll('.project-button, .experience-button').forEach((button) => {
+    button.addEventListener('click', () => openModal(button));
+});
+document.getElementById('modalClose').addEventListener('click', closeModal);
 
 // Fermer la modale si l'utilisateur clique en dehors du contenu de la modale
 window.onclick = function(event) {
@@ -185,6 +200,8 @@ function toggleMenu() {
         navbar.classList.add('collapsed');
     }
 }
+
+document.getElementById('burger-menu').addEventListener('click', toggleMenu);
 
 // Désactiver/activer le bouton en fonction de la case
 const checkbox = document.getElementById('consent');
