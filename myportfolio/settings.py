@@ -175,6 +175,15 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 CONTACT_RECIPIENT = os.getenv('CONTACT_RECIPIENT')
 
+# Anti-robot du formulaire (Cloudflare Turnstile). Sans clés : accepté en DEBUG, refusé sinon.
+TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY', '')
+TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY', '')
+
+# Limites d'envoi du formulaire. Les compteurs vivent dans le cache en mémoire du processus :
+# valable tant qu'uvicorn tourne avec un seul worker, remis à zéro à chaque redémarrage.
+CONTACT_LIMIT_PER_IP_PER_HOUR = int(os.getenv('CONTACT_LIMIT_PER_IP_PER_HOUR', '3'))
+CONTACT_LIMIT_PER_DAY = int(os.getenv('CONTACT_LIMIT_PER_DAY', '50'))
+
 STORAGES = {
     'default': {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',

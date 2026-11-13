@@ -6,6 +6,7 @@ from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from . import antispam
 from .forms import ContactForm
 from .models import Profile, Formation, Project, ProjectIdea, Category, Experience
 
@@ -40,22 +41,32 @@ def portfolio_view(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            try:
-                send_contact_email(form.cleaned_data)
-            except Exception:
-                # Journalisé sans le contenu du message ; le formulaire reste rempli
-                logger.exception("Échec de l'envoi du formulaire de contact")
-                form.add_error(None, "Votre message n'a pas pu être envoyé. Merci de réessayer plus tard.")
+            remote_ip = antispam.client_ip(request)
+            if antispam.ip_limit_reached(remote_ip) or antispam.daily_limit_reached():
+                form.add_error(None, "Trop de messages ont été envoyés. Merci de réessayer plus tard.")
             else:
-                # Redirection après POST : recharger la page ne renvoie pas le message,
-                # et l'ancre ramène le visiteur sur la confirmation
-                messages.success(request, "Votre message a été envoyé avec succès !")
-                return redirect(reverse('portfolio_view') + '#contact')
+                antispam.record_attempt(remote_ip)
+                if not antispam.verify_turnstile(request.POST.get('cf-turnstile-response', ''), remote_ip):
+                    form.add_error(None, "La vérification anti-robot a échoué. Merci de réessayer.")
+                else:
+                    try:
+                        send_contact_email(form.cleaned_data)
+                    except Exception:
+                        # Journalisé sans le contenu du message ; le formulaire reste rempli
+                        logger.exception("Échec de l'envoi du formulaire de contact")
+                        form.add_error(None, "Votre message n'a pas pu être envoyé. Merci de réessayer plus tard.")
+                    else:
+                        antispam.record_send()
+                        # Redirection après POST : recharger la page ne renvoie pas le message,
+                        # et l'ancre ramène le visiteur sur la confirmation
+                        messages.success(request, "Votre message a été envoyé avec succès !")
+                        return redirect(reverse('portfolio_view') + '#contact')
     else:
         form = ContactForm()
 
     return render(request, "portfolio/portfolio.html", {
         'form': form,
+        'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
         'profile': Profile.objects.first(),
         'projects': Project.objects.all().order_by('-starting_date'),
         'formations': Formation.objects.all().order_by('-starting_date'),

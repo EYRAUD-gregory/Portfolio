@@ -1,8 +1,13 @@
 from unittest import mock
 
-from django.core import mail
-from django.test import TestCase, override_settings
+import io
+import urllib.error
 
+from django.core import mail
+from django.core.cache import cache
+from django.test import SimpleTestCase, TestCase, override_settings
+
+from . import antispam
 from .models import Experience, Project, ProjectIdea
 
 
@@ -10,6 +15,10 @@ from .models import Experience, Project, ProjectIdea
     EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
     DEFAULT_FROM_EMAIL='portfolio@exemple.test',
     CONTACT_RECIPIENT='moi@exemple.test',
+    TURNSTILE_SITE_KEY='cle-publique-de-test',
+    TURNSTILE_SECRET_KEY='cle-secrete-de-test',
+    CONTACT_LIMIT_PER_IP_PER_HOUR=3,
+    CONTACT_LIMIT_PER_DAY=50,
     # Pas de manifest collectstatic pendant les tests
     STORAGES={
         'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
@@ -24,6 +33,61 @@ class ContactFormTests(TestCase):
         'message': 'Un message',
         'consent': 'on',
     }
+
+    def setUp(self):
+        # Compteurs remis à zéro, et Turnstile simulé : aucun test n'appelle Cloudflare
+        cache.clear()
+        patcher = mock.patch('portfolio.antispam.verify_turnstile', return_value=True)
+        self.verify_turnstile = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_turnstile_refusal_blocks_sending(self):
+        self.verify_turnstile.return_value = False
+
+        response = self.client.post('/', {**self.valid_data, 'cf-turnstile-response': 'jeton'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertContains(response, 'La vérification anti-robot a échoué.')
+        self.verify_turnstile.assert_called_once_with('jeton', '127.0.0.1')
+
+    def test_limit_per_address(self):
+        # 3 envois par heure et par adresse (valeur par défaut), l'adresse venant de Cloudflare
+        for _ in range(3):
+            self.assertEqual(self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.7').status_code, 302)
+
+        blocked = self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.7')
+        other = self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.8')
+
+        self.assertContains(blocked, 'Trop de messages ont été envoyés.')
+        self.assertEqual(other.status_code, 302)
+        self.assertEqual(len(mail.outbox), 4)
+
+    @override_settings(CONTACT_LIMIT_PER_DAY=1)
+    def test_daily_limit_applies_to_every_address(self):
+        self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.7')
+
+        response = self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.8')
+
+        self.assertContains(response, 'Trop de messages ont été envoyés.')
+        self.assertEqual(len(mail.outbox), 1)
+
+    @override_settings(CONTACT_LIMIT_PER_DAY=1)
+    def test_refused_robots_do_not_use_up_the_daily_limit(self):
+        self.verify_turnstile.return_value = False
+        self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.7')
+        self.verify_turnstile.return_value = True
+
+        response = self.client.post('/', self.valid_data, HTTP_CF_CONNECTING_IP='203.0.113.8')
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_widget_is_rendered_with_the_site_key(self):
+        response = self.client.get('/')
+
+        self.assertContains(response, 'class="cf-turnstile" data-sitekey="cle-publique-de-test"')
+        self.assertNotContains(response, 'cle-secrete-de-test')
 
     def test_success_redirects_to_contact_section_with_confirmation(self):
         response = self.client.post('/', self.valid_data, follow=True)
@@ -133,3 +197,40 @@ class PagesTests(TestCase):
         self.assertContains(response, 'Expérience sans image')
         self.assertContains(response, 'Idée sans image')
         self.assertNotContains(response, '<img src="/media/')
+
+
+@override_settings(TURNSTILE_SITE_KEY='cle-publique-de-test', TURNSTILE_SECRET_KEY='cle-secrete-de-test')
+class TurnstileVerificationTests(SimpleTestCase):
+    def answer(self, body):
+        return mock.patch('portfolio.antispam.urllib.request.urlopen', return_value=io.BytesIO(body))
+
+    def test_accepts_only_an_explicit_success(self):
+        with self.answer(b'{"success": true}') as urlopen:
+            self.assertTrue(antispam.verify_turnstile('jeton', '203.0.113.7'))
+        # Seuls ces trois champs partent chez Cloudflare
+        self.assertEqual(
+            urlopen.call_args.kwargs['data'],
+            b'secret=cle-secrete-de-test&response=jeton&remoteip=203.0.113.7',
+        )
+        with self.answer(b'{"success": false, "error-codes": ["invalid-input-response"]}'):
+            self.assertFalse(antispam.verify_turnstile('jeton', '203.0.113.7'))
+        with self.answer(b'pas du JSON'), self.assertLogs('portfolio.antispam', level='ERROR'):
+            self.assertFalse(antispam.verify_turnstile('jeton', '203.0.113.7'))
+
+    def test_missing_token_is_refused_without_calling_cloudflare(self):
+        with self.answer(b'{"success": true}') as urlopen:
+            self.assertFalse(antispam.verify_turnstile('', '203.0.113.7'))
+        urlopen.assert_not_called()
+
+    def test_unreachable_service_is_a_refusal(self):
+        error = urllib.error.URLError('injoignable')
+        with mock.patch('portfolio.antispam.urllib.request.urlopen', side_effect=error):
+            with self.assertLogs('portfolio.antispam', level='ERROR'):
+                self.assertFalse(antispam.verify_turnstile('jeton', '203.0.113.7'))
+
+    @override_settings(TURNSTILE_SITE_KEY='', TURNSTILE_SECRET_KEY='')
+    def test_missing_keys_are_a_refusal_outside_debug(self):
+        with self.assertLogs('portfolio.antispam', level='ERROR'):
+            self.assertFalse(antispam.verify_turnstile('jeton', '203.0.113.7'))
+        with override_settings(DEBUG=True):
+            self.assertTrue(antispam.verify_turnstile('jeton', '203.0.113.7'))

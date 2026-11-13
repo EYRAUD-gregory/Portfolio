@@ -245,6 +245,12 @@
                         </label>
                         {% for error in form.consent.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
+                    {% if turnstile_site_key %}
+                    <!-- Défi anti-robot : son jeton est vérifié côté serveur avant tout envoi -->
+                    <div class="form-group">
+                        <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-language="fr"></div>
+                    </div>
+                    {% endif %}
                     <button type="submit" class="btn-submit" id="submit-button" disabled>Envoyer</button>
                 </form>
             </section>
@@ -284,6 +290,9 @@
 
     <!-- Lien vers le script JavaScript externe -->
     <script src="{% static 'portfolio/script.js' %}"></script>
+    {% if turnstile_site_key %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
 
     </body>
 
