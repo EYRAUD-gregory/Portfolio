@@ -536,6 +536,11 @@ h2:hover::after {
 .overlay {
     position: absolute;
     bottom: 0;
+    left: 0;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
     background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
     color: white;
     width: 100%;
@@ -548,16 +553,16 @@ h2:hover::after {
     transition: opacity 0.3s;
 }
 
-/* Bouton "+" sur la superposition */
-.project-button, .experience-button {
-    background: rgba(255, 255, 255, 0.8);
-    color: #333;
+/* Icône "+" sous le titre */
+.overlay-icon {
     margin-top: 10px;
     font-size: 1.2em;
 }
 
-/* Affiche la superposition au survol */
-.project-image-container, .experience-image-container:hover .overlay {
+/* Affiche la superposition au survol de la carte, ou quand elle reçoit le focus clavier */
+.project-image-container:hover .overlay,
+.experience-image-container:hover .overlay,
+.overlay:focus-visible {
     opacity: 1;
 }
 

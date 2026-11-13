@@ -119,17 +119,16 @@
                         <div class="w3-card-4 project-card">
                             <div class="experience-image-container">
                                 {% if experience.image %}<img src="{{ experience.image.url }}" alt="{{ experience.title }}" class="experience-image">{% endif %}
-                                <div class="overlay">
+                                <!-- Toute la carte est le bouton qui ouvre la modale -->
+                                <button type="button"
+                                    class="overlay experience-button"
+                                    data-title="{{ experience.title }}"
+                                    data-description="{{ experience.description }}"
+                                    data-start-date="{{ experience.starting_date|default_if_none:'' }}"
+                                    data-end-date="{{ experience.ending_date|default_if_none:'' }}">
                                     <span class="w3-large">{{ experience.title }}</span>
-                                    <button
-                                        class="w3-button w3-circle w3-teal experience-button"
-                                        data-title="{{ experience.title }}"
-                                        data-description="{{ experience.description }}"
-                                        data-start-date="{{ experience.starting_date|default_if_none:'' }}"
-                                        data-end-date="{{ experience.ending_date|default_if_none:'' }}">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
+                                    <i class="fa fa-plus overlay-icon"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -146,17 +145,16 @@
                         <div class="w3-card-4 project-card">
                             <div class="project-image-container">
                                 {% if project.image %}<img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">{% endif %}
-                                <div class="overlay">
+                                <!-- Toute la carte est le bouton qui ouvre la modale -->
+                                <button type="button"
+                                    class="overlay project-button"
+                                    data-title="{{ project.title }}"
+                                    data-description="{{ project.description }}"
+                                    data-start-date="{{ project.starting_date|default_if_none:'' }}"
+                                    data-end-date="{{ project.ending_date|default_if_none:'' }}">
                                     <span class="w3-large">{{ project.title }}</span>
-                                    <button
-                                        class="w3-button w3-circle w3-teal project-button"
-                                        data-title="{{ project.title }}"
-                                        data-description="{{ project.description }}"
-                                        data-start-date="{{ project.starting_date|default_if_none:'' }}"
-                                        data-end-date="{{ project.ending_date|default_if_none:'' }}">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
+                                    <i class="fa fa-plus overlay-icon"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -173,15 +171,14 @@
                         <div class="w3-card-4 project-card">
                             <div class="project-image-container">
                                 {% if project_idea.image %}<img src="{{ project_idea.image.url }}" alt="{{ project_idea.title }}" class="project-image">{% endif %}
-                                <div class="overlay">
+                                <!-- Toute la carte est le bouton qui ouvre la modale -->
+                                <button type="button"
+                                    class="overlay project-button"
+                                    data-title="{{ project_idea.title }}"
+                                    data-description="{{ project_idea.description }}">
                                     <span class="w3-large">{{ project_idea.title }}</span>
-                                    <button
-                                        class="w3-button w3-circle w3-teal project-button"
-                                        data-title="{{ project_idea.title }}"
-                                        data-description="{{ project_idea.description }}">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </div>
+                                    <i class="fa fa-plus overlay-icon"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
