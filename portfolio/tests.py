@@ -250,6 +250,16 @@ class PagesTests(TestCase):
 
         self.assertEqual([p.title for p in python.projects.all()], ['Projet'])
 
+    def test_experience_company_summary_and_skills_are_optional(self):
+        python = Skill.objects.create(name='Python', category=Category.objects.create(name='Langages'))
+        experience = Experience(title='Poste', description='Description')
+        experience.full_clean()
+        experience.company = 'Entreprise'
+        experience.save()
+        experience.skills.add(python)
+
+        self.assertEqual([e.company for e in python.experiences.all()], ['Entreprise'])
+
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
         Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)

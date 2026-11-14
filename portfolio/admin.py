@@ -5,7 +5,12 @@ from .models import Profile, Formation, Project, Category, Skill, Experience
 
 admin.site.register(Profile)
 admin.site.register(Formation)
-admin.site.register(Experience)
+
+
+@admin.register(Experience)
+class ExperienceAdmin(admin.ModelAdmin):
+    list_display = ('title', 'company', 'starting_date', 'ending_date')
+    filter_horizontal = ('skills',)
 
 
 @admin.register(Project)

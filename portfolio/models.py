@@ -72,6 +72,10 @@ class Experience(models.Model):
     image = models.ImageField(upload_to='projects/', blank=True, null=True)
     starting_date = models.DateField(null=True, blank=True)
     ending_date = models.DateField(null=True, blank=True)
+    company = models.CharField("entreprise", max_length=200, blank=True)
+    # Phrase courte affichée sur la carte ; la description complète reste dans la modale
+    summary = models.CharField("résumé", max_length=200, blank=True)
+    skills = models.ManyToManyField(Skill, verbose_name="technos", related_name='experiences', blank=True)
 
     def __str__(self):
         return self.title
