@@ -237,6 +237,18 @@ class PagesTests(TestCase):
         self.assertEqual(project.status, Project.Status.DONE)
         self.assertEqual(project.get_status_display(), 'Terminé')
 
+    def test_project_is_not_featured_by_default(self):
+        # « Mis en avant » se choisit projet par projet, quel que soit le statut
+        project = Project.objects.create(
+            title='Projet', description='Description', status=Project.Status.IN_PROGRESS)
+
+        self.assertFalse(project.featured)
+
+        project.featured = True
+        project.save()
+
+        self.assertEqual([p.title for p in Project.objects.filter(featured=True)], ['Projet'])
+
     def test_project_summary_and_links_are_optional(self):
         project = Project(title='Projet', description='Description')
         project.full_clean()

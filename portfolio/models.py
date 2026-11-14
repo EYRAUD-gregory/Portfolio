@@ -50,6 +50,10 @@ class Project(models.Model):
     repo_url = models.URLField("lien du dépôt", blank=True)
     demo_url = models.URLField("lien de la démo", blank=True)
     skills = models.ManyToManyField('Skill', verbose_name="technos", related_name='projects', blank=True)
+    # Indépendant du statut : plusieurs projets peuvent être en cours sans tous occuper une carte large
+    featured = models.BooleanField(
+        "mis en avant", default=False,
+        help_text="Affiche le projet en grand, en tête de la section Projets. Sans effet sur une idée.")
 
     def __str__(self):
         return self.title

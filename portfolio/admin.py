@@ -24,8 +24,8 @@ class ExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'status', 'starting_date', 'ending_date')
-    list_filter = ('status',)
+    list_display = ('title', 'status', 'featured', 'starting_date', 'ending_date')
+    list_filter = ('status', 'featured')
     filter_horizontal = ('skills',)
 
 
