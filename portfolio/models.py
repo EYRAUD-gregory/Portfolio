@@ -14,6 +14,10 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     # Textes qui défilent sous le nom, dans le bandeau d'accueil
     taglines = models.TextField("accroches du bandeau", blank=True, help_text="Une accroche par ligne.")
+    # Phrase fixe sous les accroches : qui je suis et ce que je fais, en une ligne
+    lead = models.CharField(
+        "phrase de présentation", max_length=300, blank=True,
+        help_text="Affichée sous les accroches, dans le bandeau d'accueil.")
 
     def __str__(self):
         return self.name

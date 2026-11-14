@@ -309,6 +309,14 @@ class PagesTests(TestCase):
         # json_script neutralise les caractères qui pourraient fermer la balise
         self.assertNotContains(response, '<ASGI>')
 
+    def test_profile_lead_is_optional(self):
+        profile = Profile(name='Nom', bio='Bio', contact_email='moi@exemple.test')
+        profile.full_clean()
+
+        profile.lead = 'x' * 301
+        with self.assertRaises(ValidationError):
+            profile.full_clean()
+
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
         Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)
