@@ -39,6 +39,10 @@ class Project(models.Model):
     starting_date = models.DateField(null=True, blank=True)
     ending_date = models.DateField(null=True, blank=True)
     status = models.CharField("statut", max_length=20, choices=Status.choices, default=Status.DONE)
+    # Phrase courte affichée sur la carte ; la description complète reste dans la modale
+    summary = models.CharField("résumé", max_length=200, blank=True)
+    repo_url = models.URLField("lien du dépôt", blank=True)
+    demo_url = models.URLField("lien de la démo", blank=True)
 
     def __str__(self):
         return self.title

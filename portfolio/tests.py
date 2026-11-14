@@ -5,6 +5,7 @@ import urllib.error
 
 from django.core import mail
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_settings
@@ -232,6 +233,14 @@ class PagesTests(TestCase):
 
         self.assertEqual(project.status, Project.Status.DONE)
         self.assertEqual(project.get_status_display(), 'Terminé')
+
+    def test_project_summary_and_links_are_optional(self):
+        project = Project(title='Projet', description='Description')
+        project.full_clean()
+
+        project.repo_url = 'pas une adresse'
+        with self.assertRaises(ValidationError):
+            project.full_clean()
 
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
