@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.db.models import F
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -11,6 +12,10 @@ from .forms import ContactForm
 from .models import Profile, Formation, Project, Category, Experience
 
 logger = logging.getLogger(__name__)
+
+# Du plus récent au plus ancien ; un élément sans date va à la fin
+# (par défaut, Postgres place les valeurs vides en tête d'un tri décroissant)
+NEWEST_FIRST = F('starting_date').desc(nulls_last=True)
 
 
 def send_contact_email(cleaned_data):
@@ -66,11 +71,11 @@ def portfolio_view(request):
         'form': form,
         'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
         'profile': Profile.objects.first(),
-        'projects': Project.objects.filter(status=Project.Status.DONE).order_by('-starting_date'),
-        'formations': Formation.objects.all().order_by('-starting_date'),
+        'projects': Project.objects.filter(status=Project.Status.DONE).order_by(NEWEST_FIRST),
+        'formations': Formation.objects.all().order_by(NEWEST_FIRST),
         # Idées et projets en cours : les projets qui ne sont pas terminés
-        'project_ideas': Project.objects.exclude(status=Project.Status.DONE).order_by('-starting_date'),
-        'experiences': Experience.objects.all().order_by('-starting_date'),
+        'project_ideas': Project.objects.exclude(status=Project.Status.DONE).order_by(NEWEST_FIRST),
+        'experiences': Experience.objects.all().order_by(NEWEST_FIRST),
         'categories': Category.objects.prefetch_related('skills').all(),
     })
 

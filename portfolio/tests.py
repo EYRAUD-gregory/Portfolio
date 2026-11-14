@@ -1,3 +1,4 @@
+from datetime import date
 from unittest import mock
 
 import io
@@ -267,6 +268,18 @@ class PagesTests(TestCase):
         formation.save()
 
         self.assertEqual(Formation.objects.get().school, 'Université')
+
+    def test_items_without_date_come_last(self):
+        for model in (Project, Formation, Experience):
+            model.objects.create(title='Sans date', description='Description')
+            model.objects.create(title='Ancien', description='Description', starting_date=date(2020, 1, 1))
+            model.objects.create(title='Récent', description='Description', starting_date=date(2024, 1, 1))
+
+        context = self.client.get('/').context
+
+        for key in ('projects', 'formations', 'experiences'):
+            with self.subTest(key=key):
+                self.assertEqual([item.title for item in context[key]], ['Récent', 'Ancien', 'Sans date'])
 
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
