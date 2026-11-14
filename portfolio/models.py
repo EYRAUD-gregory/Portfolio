@@ -44,28 +44,6 @@ class Project(models.Model):
         return self.title
 
 
-class ProjectIdea(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    image = models.ImageField(upload_to='projects_ideas/', blank=True, null=True)
-
-    def __str__(self):
-        return self.title
-
-    def convert_to_project(self, starting_date, ending_date):
-        """
-        Convertit cette idée en un projet en cours ou terminé.
-        """
-        project = Project.objects.create(
-            title=self.title,
-            description=self.description,
-            image=self.image,
-            starting_date=starting_date,
-            ending_date=ending_date
-        )
-        return project
-
-
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
