@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.test import SimpleTestCase, TestCase, override_settings
 
 from . import antispam
-from .models import Experience, Project, ProjectIdea
+from .models import Experience, Profile, Project, ProjectIdea
 
 
 @override_settings(
@@ -126,6 +126,32 @@ class ContactFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Votre message n&#x27;a pas pu être envoyé.")
         self.assertNotContains(response, 'Votre message a été envoyé avec succès !')
+
+    def test_company_and_phone_are_no_longer_collected(self):
+        # Champs retirés : forgés à la main, ils ne doivent pas arriver dans le mail
+        response = self.client.post('/', {**self.valid_data, 'societe': 'Entreprise forgée', 'telephone': '0102030405'})
+
+        self.assertEqual(response.status_code, 302)
+        body = mail.outbox[0].body
+        self.assertNotIn('Entreprise forgée', body)
+        self.assertNotIn('0102030405', body)
+        self.assertNotIn('Société', body)
+        self.assertNotIn('Téléphone', body)
+        page = self.client.get('/')
+        self.assertNotContains(page, 'name="societe"')
+        self.assertNotContains(page, 'name="telephone"')
+
+    def test_linkedin_link_is_shown_next_to_the_form(self):
+        self.assertNotContains(self.client.get('/'), 'class="contact-alternative"')
+
+        Profile.objects.create(
+            name='Nom', bio='Bio', contact_email='moi@exemple.test',
+            linkedin='https://www.linkedin.com/in/exemple/',
+        )
+
+        response = self.client.get('/')
+        self.assertContains(response, 'class="contact-alternative"')
+        self.assertContains(response, 'href="https://www.linkedin.com/in/exemple/"')
 
     def test_visitor_address_is_only_reply_to(self):
         # cc_myself forgé à la main : il ne doit plus avoir aucun effet

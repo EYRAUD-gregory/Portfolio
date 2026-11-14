@@ -693,6 +693,16 @@ html, body  {
     font-size: 1em;
 }
 
+/* Lien LinkedIn proposé à côté du formulaire */
+.contact-alternative {
+    max-width: 600px;
+    margin: 20px auto 0;
+}
+
+.contact-alternative a {
+    color: #ff6347;
+}
+
 /* Erreur de validation affichée sous un champ du formulaire */
 .field-error {
     color: #b00020;

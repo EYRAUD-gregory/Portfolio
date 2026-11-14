@@ -213,16 +213,6 @@
                         {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
                     </div>
                     <div class="form-group">
-                        <label for="societe">Société</label>
-                        <input type="text" id="societe" name="societe" value="{{ form.societe.value|default_if_none:'' }}">
-                        {% for error in form.societe.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label for="telephone">Téléphone</label>
-                        <input type="tel" id="telephone" name="telephone" value="{{ form.telephone.value|default_if_none:'' }}">
-                        {% for error in form.telephone.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
                         <label for="sender">Email *</label>
                         <input type="email" id="sender" name="sender" value="{{ form.sender.value|default_if_none:'' }}" required>
                         {% for error in form.sender.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
@@ -252,6 +242,13 @@
                     {% endif %}
                     <button type="submit" class="btn-submit" id="submit-button" disabled>Envoyer</button>
                 </form>
+                {% if profile.linkedin %}
+                <!-- Autre moyen de contact, sans passer par le formulaire -->
+                <p class="contact-alternative">
+                    Vous pouvez aussi me contacter sur
+                    <a href="{{ profile.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+                </p>
+                {% endif %}
             </section>
 
         </div>

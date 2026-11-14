@@ -21,8 +21,6 @@ def send_contact_email(cleaned_data):
         f"Sujet : {cleaned_data['subject']}\n\n"
         f"Message : {cleaned_data['message']}\n\n"
         f"---\n"
-        f"Société : {cleaned_data['societe'] or 'Non spécifié'}\n"
-        f"Téléphone : {cleaned_data['telephone'] or 'Non spécifié'}\n"
         f"Envoyé par : {cleaned_data['name']} ({sender})\n"
     )
 

@@ -6,8 +6,6 @@ class ContactForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea, label="Message")
     name = forms.CharField(max_length=100, label="Nom")
     sender = forms.EmailField(label="Votre email")
-    societe = forms.CharField(max_length=100, required=False, label="Société")  # Champ facultatif
-    telephone = forms.CharField(max_length=20, required=False, label="Téléphone")  # Champ facultatif
     # Vérifié ici aussi : la case du navigateur se contourne en une requête
     consent = forms.BooleanField(
         label="Consentement",
