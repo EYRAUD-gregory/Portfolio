@@ -463,6 +463,10 @@ class PagesTests(TestCase):
                      '/static/vendor/montserrat/montserrat-latin.woff2'):
             with self.subTest(path=path):
                 self.assertContains(response, path)
+        # Les anciennes feuilles et icônes tierces ne sont plus référencées
+        self.assertNotContains(response, 'w3.css')
+        self.assertNotContains(response, 'w3-')
+        self.assertNotContains(response, 'font-awesome')
         # Aucun style ni script écrit dans la page : une politique de sécurité stricte reste possible
         self.assertNotContains(response, '<style')
         self.assertNotContains(response, ' style="')
