@@ -5,10 +5,12 @@ import urllib.error
 
 from django.core import mail
 from django.core.cache import cache
-from django.test import SimpleTestCase, TestCase, override_settings
+from django.db import connection
+from django.db.migrations.executor import MigrationExecutor
+from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_settings
 
 from . import antispam
-from .models import Experience, Profile, Project, ProjectIdea
+from .models import Experience, Profile, Project
 
 
 @override_settings(
@@ -214,7 +216,7 @@ class PagesTests(TestCase):
         # L'image est facultative : son absence ne doit pas faire tomber la page
         Project.objects.create(title='Projet sans image', description='Description')
         Experience.objects.create(title='Expérience sans image', description='Description')
-        ProjectIdea.objects.create(title='Idée sans image', description='Description')
+        Project.objects.create(title='Idée sans image', description='Description', status=Project.Status.IDEA)
 
         response = self.client.get('/')
 
@@ -231,6 +233,16 @@ class PagesTests(TestCase):
         self.assertEqual(project.status, Project.Status.DONE)
         self.assertEqual(project.get_status_display(), 'Terminé')
 
+    def test_unfinished_projects_go_to_the_ideas_section(self):
+        Project.objects.create(title='Terminé', description='Description')
+        Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)
+        Project.objects.create(title='Idée', description='Description', status=Project.Status.IDEA)
+
+        context = self.client.get('/').context
+
+        self.assertEqual([p.title for p in context['projects']], ['Terminé'])
+        self.assertCountEqual([p.title for p in context['project_ideas']], ['En cours', 'Idée'])
+
     def test_home_loads_no_third_party_stylesheet_or_font(self):
         # Feuilles de style, police et icônes sont servies par le site lui-même
         response = self.client.get('/')
@@ -239,6 +251,39 @@ class PagesTests(TestCase):
             with self.subTest(host=host):
                 self.assertNotContains(response, host)
         self.assertContains(response, '/static/vendor/font-awesome/icons.svg#home')
+
+
+class MergeIdeasMigrationTests(TransactionTestCase):
+    before = [('portfolio', '0002_project_status')]
+    after = [('portfolio', '0003_merge_ideas_into_projects')]
+
+    def migrate(self, targets):
+        executor = MigrationExecutor(connection)
+        executor.migrate(targets)
+        return MigrationExecutor(connection).loader.project_state(targets).apps
+
+    def test_ideas_become_projects_with_idea_status(self):
+        # Le schéma est ramené à la dernière migration à la fin du test
+        self.addCleanup(lambda: MigrationExecutor(connection).migrate(
+            MigrationExecutor(connection).loader.graph.leaf_nodes()))
+        apps = self.migrate(self.before)
+        apps.get_model('portfolio', 'Project').objects.create(title='Projet existant', description='Déjà là')
+        apps.get_model('portfolio', 'ProjectIdea').objects.create(
+            title='Une idée', description='Sa description', image='projects_ideas/idee.png')
+
+        apps = self.migrate(self.after)
+
+        projects = {p.title: p for p in apps.get_model('portfolio', 'Project').objects.all()}
+        self.assertEqual(set(projects), {'Projet existant', 'Une idée'})
+        self.assertEqual(projects['Projet existant'].status, 'done')
+        self.assertEqual(projects['Une idée'].status, 'idea')
+        self.assertEqual(projects['Une idée'].description, 'Sa description')
+        self.assertEqual(projects['Une idée'].image.name, 'projects_ideas/idee.png')
+
+        # Retour arrière : seul le projet issu de l'idée est retiré
+        apps = self.migrate(self.before)
+        self.assertEqual(
+            [p.title for p in apps.get_model('portfolio', 'Project').objects.all()], ['Projet existant'])
 
 
 @override_settings(TURNSTILE_SITE_KEY='cle-publique-de-test', TURNSTILE_SECRET_KEY='cle-secrete-de-test')

@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from . import antispam
 from .forms import ContactForm
-from .models import Profile, Formation, Project, ProjectIdea, Category, Experience
+from .models import Profile, Formation, Project, Category, Experience
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +66,10 @@ def portfolio_view(request):
         'form': form,
         'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
         'profile': Profile.objects.first(),
-        'projects': Project.objects.all().order_by('-starting_date'),
+        'projects': Project.objects.filter(status=Project.Status.DONE).order_by('-starting_date'),
         'formations': Formation.objects.all().order_by('-starting_date'),
-        'project_ideas': ProjectIdea.objects.all(),
+        # Idées et projets en cours : les projets qui ne sont pas terminés
+        'project_ideas': Project.objects.exclude(status=Project.Status.DONE).order_by('-starting_date'),
         'experiences': Experience.objects.all().order_by('-starting_date'),
         'categories': Category.objects.prefetch_related('skills').all(),
     })
