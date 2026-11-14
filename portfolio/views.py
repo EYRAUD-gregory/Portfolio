@@ -3,13 +3,14 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
-from django.db.models import F
+from django.db.models import F, Prefetch
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from . import antispam
 from .forms import ContactForm
-from .models import Profile, Formation, Project, Category, Experience
+from .graph import build_details, build_graph
+from .models import Profile, Formation, Project, Category, Experience, Skill
 
 logger = logging.getLogger(__name__)
 
@@ -68,18 +69,27 @@ def portfolio_view(request):
         form = ContactForm()
 
     profile = Profile.objects.first()
+    # Les technos sont chargées en une requête par liste, dans un ordre stable :
+    # la disposition du graphe en dépend
+    skills = Prefetch('skills', queryset=Skill.objects.order_by('name'))
+    experiences = list(Experience.objects.prefetch_related(skills).order_by(NEWEST_FIRST))
+    projects = list(Project.objects.prefetch_related(skills).order_by(NEWEST_FIRST))
+    items = experiences + projects
 
     return render(request, "portfolio/portfolio.html", {
         'form': form,
         'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
         'profile': profile,
         'taglines': profile.tagline_list() if profile else [],
-        'projects': Project.objects.filter(status=Project.Status.DONE).order_by(NEWEST_FIRST),
+        'projects': [p for p in projects if p.status == Project.Status.DONE],
         'formations': Formation.objects.all().order_by(NEWEST_FIRST),
         # Idées et projets en cours : les projets qui ne sont pas terminés
-        'project_ideas': Project.objects.exclude(status=Project.Status.DONE).order_by(NEWEST_FIRST),
-        'experiences': Experience.objects.all().order_by(NEWEST_FIRST),
+        'project_ideas': [p for p in projects if p.status != Project.Status.DONE],
+        'experiences': experiences,
         'categories': Category.objects.prefetch_related('skills').all(),
+        # Graphe du bandeau et fenêtre de détail : des valeurs, que le script écrit en texte
+        'graph': build_graph(profile, items),
+        'details': build_details(items),
     })
 
 

@@ -15,6 +15,7 @@ from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_
 from django.urls import reverse
 
 from . import antispam
+from .graph import short_label
 from .models import Category, Experience, Formation, Profile, Project, Skill
 
 
@@ -348,6 +349,87 @@ class PagesTests(TestCase):
             with self.subTest(host=host):
                 self.assertNotContains(response, host)
         self.assertContains(response, '/static/vendor/font-awesome/icons.svg#home')
+
+
+@override_settings(
+    STORAGES={
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    },
+)
+class GraphDataTests(TestCase):
+    def setUp(self):
+        languages = Category.objects.create(name='Langages')
+        self.python = Skill.objects.create(name='Python', category=languages)
+        self.neo4j = Skill.objects.create(name='Neo4j', category=languages)
+
+    def test_graph_links_me_to_items_and_items_to_their_skills(self):
+        Profile.objects.create(name='Prénom Nom', bio='Bio', contact_email='moi@exemple.test')
+        experience = Experience.objects.create(title='Poste', description='Description')
+        project = Project.objects.create(title='Projet', description='Description')
+        idea = Project.objects.create(title='Idée', description='Description', status=Project.Status.IDEA)
+        experience.skills.add(self.python)
+        project.skills.add(self.python, self.neo4j)
+
+        graph = self.client.get('/').context['graph']
+
+        nodes = {node['id']: node for node in graph['nodes']}
+        self.assertEqual(nodes['me']['label'], 'PN')
+        self.assertEqual(nodes[project.anchor]['href'], f'#projet-{project.pk}')
+        self.assertEqual(nodes[experience.anchor]['href'], f'#experience-{experience.pk}')
+        self.assertTrue(nodes[idea.anchor]['idea'])
+        self.assertFalse(nodes[project.anchor]['idea'])
+        # Python sert à deux éléments : un seul point, deux liens
+        self.assertEqual([n['label'] for n in graph['nodes'] if n['type'] == 'tech'], ['Python', 'Neo4j'])
+        self.assertCountEqual(graph['links'], [
+            ['me', experience.anchor], ['me', project.anchor], ['me', idea.anchor],
+            [experience.anchor, 'tech:python'], [project.anchor, 'tech:python'], [project.anchor, 'tech:neo4j'],
+        ])
+
+    def test_same_skill_entered_twice_is_one_point(self):
+        other = Skill.objects.create(name=' python ', category=Category.objects.create(name='Outils'))
+        project = Project.objects.create(title='Projet', description='Description')
+        project.skills.add(self.python, other)
+
+        graph = self.client.get('/').context['graph']
+
+        self.assertEqual([n['id'] for n in graph['nodes']], ['me', project.anchor, 'tech:python'])
+        self.assertEqual(graph['links'], [['me', project.anchor], [project.anchor, 'tech:python']])
+
+    def test_graph_is_only_me_with_an_empty_database(self):
+        graph = self.client.get('/').context['graph']
+
+        self.assertEqual(graph, {'nodes': [{'id': 'me', 'type': 'me', 'label': ''}], 'links': []})
+
+    def test_long_titles_are_shortened_on_whole_words(self):
+        self.assertEqual(short_label('Titre court'), 'Titre court')
+        self.assertEqual(short_label('Assistant de recherche pour les archives'), 'Assistant de recherche…')
+        # Pas de coupe sur un petit mot : « Guide de… » ne veut rien dire
+        self.assertEqual(short_label('Classification de documents juridiques'), 'Classification…')
+
+    def test_details_carry_what_the_dialog_shows(self):
+        experience = Experience.objects.create(
+            title='Poste', description='Le détail', company='Entreprise',
+            starting_date=date(2023, 9, 1), ending_date=date(2024, 6, 30))
+        project = Project.objects.create(
+            title='Projet', description='Ligne "un"\n<b>deux</b>', image='projects/factice.png',
+            starting_date=date(2022, 3, 1), ending_date=date(2022, 3, 20),
+            repo_url='https://exemple.test/depot', demo_url='https://exemple.test/demo')
+        project.skills.add(self.neo4j, self.python)
+
+        details = self.client.get('/').context['details']
+
+        self.assertEqual(details[experience.anchor], {
+            'title': 'Poste', 'meta': 'Entreprise · septembre 2023 – juin 2024', 'body': 'Le détail',
+            'tools': [], 'links': [], 'img': '',
+        })
+        self.assertEqual(details[project.anchor], {
+            'title': 'Projet', 'meta': 'mars 2022', 'body': 'Ligne "un"\n<b>deux</b>',
+            'tools': ['Neo4j', 'Python'],
+            'links': [{'label': 'Code', 'url': 'https://exemple.test/depot'},
+                      {'label': 'Démo', 'url': 'https://exemple.test/demo'}],
+            'img': '/media/projects/factice.png',
+        })
 
 
 @override_settings(

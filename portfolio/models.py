@@ -1,5 +1,12 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.utils.formats import date_format
+
+
+def period_label(start, end):
+    """« septembre 2023 – juin 2024 » ; un seul mois si les deux dates tombent le même, rien sans date."""
+    months = dict.fromkeys(date_format(day, 'F Y') for day in (start, end) if day)
+    return ' – '.join(months)
 
 
 class Profile(models.Model):
@@ -64,6 +71,25 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def anchor(self):
+        # Ancre de la carte dans la page, et clé du projet dans les données envoyées au script
+        return f'projet-{self.pk}'
+
+    @property
+    def is_idea(self):
+        return self.status == self.Status.IDEA
+
+    def period(self):
+        return period_label(self.starting_date, self.ending_date)
+
+    def meta(self):
+        return self.period()
+
+    def links(self):
+        candidates = (('Code', self.repo_url), ('Démo', self.demo_url))
+        return [{'label': label, 'url': url} for label, url in candidates if url]
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -93,5 +119,21 @@ class Experience(models.Model):
     summary = models.CharField("résumé", max_length=200, blank=True)
     skills = models.ManyToManyField(Skill, verbose_name="technos", related_name='experiences', blank=True)
 
+    is_idea = False
+
     def __str__(self):
         return self.title
+
+    @property
+    def anchor(self):
+        # Ancre de l'expérience dans la page, et sa clé dans les données envoyées au script
+        return f'experience-{self.pk}'
+
+    def period(self):
+        return period_label(self.starting_date, self.ending_date)
+
+    def meta(self):
+        return ' · '.join(part for part in (self.company, self.period()) if part)
+
+    def links(self):
+        return []
