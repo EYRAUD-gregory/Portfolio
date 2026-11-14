@@ -388,7 +388,9 @@ class PagesTests(TestCase):
 
         project.summary = 'Résumé saisi'
         self.assertEqual(project.card_summary(), 'Résumé saisi')
-        self.assertEqual(len(Project(title='Projet', description='mot ' * 100).card_summary()), 200)
+        # Une phrase trop longue est coupée sur un mot entier
+        long_summary = Project(title='Projet', description='abcdefg ' * 60).card_summary()
+        self.assertEqual(long_summary, 'abcdefg ' * 23 + 'abcdefg…')
 
     def test_header_shows_lead_and_cv_only_when_filled(self):
         profile = Profile.objects.create(name='Prénom Nom', bio='Un\n\nDeux', contact_email='moi@exemple.test')
@@ -406,6 +408,27 @@ class PagesTests(TestCase):
         response = self.client.get('/')
         self.assertContains(response, '<p class="hero-lead">Une phrase de présentation</p>')
         self.assertContains(response, 'href="/media/cv/cv.pdf" download')
+
+    def test_share_preview_uses_absolute_addresses(self):
+        # Sans profil : pas de description vide, mais l'image et l'adresse sont là
+        response = self.client.get('/')
+        self.assertNotContains(response, 'name="description"')
+        self.assertContains(response, '<meta property="og:url" content="http://testserver/">')
+        self.assertContains(
+            response, '<meta property="og:image" content="http://testserver/static/images/partage.jpeg">')
+
+        profile = Profile.objects.create(
+            name='Prénom Nom', bio='Première phrase de la bio. La suite.', contact_email='moi@exemple.test')
+        response = self.client.get('/')
+        self.assertContains(response, '<meta property="og:title" content="Prénom Nom - Portfolio">')
+        self.assertContains(response, '<meta name="description" content="Première phrase de la bio.">')
+
+        # La phrase de présentation, une fois saisie, remplace le début de la bio
+        profile.lead = 'Phrase de "présentation" <b>'
+        profile.save()
+        self.assertContains(
+            self.client.get('/'),
+            '<meta property="og:description" content="Phrase de &quot;présentation&quot; &lt;b&gt;">')
 
     def test_graph_is_drawn_only_when_there_is_something_to_link(self):
         # Base vide : pas de cadre vide dans le bandeau, pas de section sans contenu

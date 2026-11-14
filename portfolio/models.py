@@ -3,7 +3,6 @@ import re
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.formats import date_format
-from django.utils.text import Truncator
 
 # Liens saisis en HTML dans d'anciennes descriptions : leurs balises n'ont pas leur place sur une carte
 LINK_TAG = re.compile(r'<a\s[^>]*>|</a>')
@@ -19,7 +18,10 @@ def first_sentence(text, limit=200):
     """Résumé de secours d'une carte, tant que le champ « résumé » n'est pas rempli."""
     text = ' '.join(LINK_TAG.sub('', text).split())
     sentence = re.split(r'(?<=[.!?])\s', text, maxsplit=1)[0]
-    return Truncator(sentence).chars(limit)
+    if len(sentence) <= limit:
+        return sentence
+    # Trop longue : coupée sur un mot entier
+    return sentence[:limit - 1].rsplit(' ', 1)[0] + '…'
 
 
 class Profile(models.Model):
@@ -49,6 +51,10 @@ class Profile(models.Model):
 
     def bio_paragraphs(self):
         return [line.strip() for line in self.bio.splitlines() if line.strip()]
+
+    def meta_description(self):
+        """Phrase reprise par les moteurs de recherche et par l'aperçu affiché quand le lien est partagé."""
+        return self.lead or first_sentence(self.bio, limit=160)
 
 
 class Formation(models.Model):

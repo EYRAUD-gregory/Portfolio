@@ -3,6 +3,22 @@
 
 {% block title %}{% if profile %}{{ profile.name }} - {% endif %}Portfolio{% endblock %}
 
+{% block meta %}
+    {% if share.description %}<meta name="description" content="{{ share.description }}">{% endif %}
+    <link rel="canonical" href="{{ share.url }}">
+    <!-- Aperçu affiché quand le lien est collé dans un message ou un réseau social -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:url" content="{{ share.url }}">
+    <meta property="og:title" content="{% if profile %}{{ profile.name }} - {% endif %}Portfolio">
+    {% if share.description %}<meta property="og:description" content="{{ share.description }}">{% endif %}
+    <meta property="og:image" content="{{ share.image }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{% if profile %}{{ profile.name }}, {% endif %}portfolio">
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
 {% block body %}
 <a class="skip" href="#contenu">Aller au contenu</a>
 

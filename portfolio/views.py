@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.db.models import F, Prefetch
 from django.shortcuts import redirect, render
+from django.templatetags.static import static
 from django.urls import reverse
 
 from . import antispam
@@ -94,6 +95,12 @@ def portfolio_view(request):
         'graph': graph,
         # Sans rien à relier, le bandeau se passe du graphe
         'has_graph': len(graph['nodes']) > 1,
+        # Aperçu affiché quand le lien du site est partagé : les adresses doivent être complètes
+        'share': {
+            'description': profile.meta_description() if profile else '',
+            'url': request.build_absolute_uri(reverse('portfolio_view')),
+            'image': request.build_absolute_uri(static('images/partage.jpeg')),
+        },
         'graph_has_techs': any(node['type'] == 'tech' for node in graph['nodes']),
         'details': build_details(items),
     })
