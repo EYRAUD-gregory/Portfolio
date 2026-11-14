@@ -4,12 +4,14 @@ from unittest import mock
 import io
 import urllib.error
 
+from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_settings
+from django.urls import reverse
 
 from . import antispam
 from .models import Category, Experience, Formation, Profile, Project, Skill
@@ -299,6 +301,24 @@ class PagesTests(TestCase):
             with self.subTest(host=host):
                 self.assertNotContains(response, host)
         self.assertContains(response, '/static/vendor/font-awesome/icons.svg#home')
+
+
+@override_settings(
+    STORAGES={
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    },
+)
+class ProfileAdminTests(TestCase):
+    def test_a_second_profile_cannot_be_added(self):
+        self.client.force_login(User.objects.create_superuser('admin'))
+        add_url = reverse('admin:portfolio_profile_add')
+
+        self.assertEqual(self.client.get(add_url).status_code, 200)
+
+        Profile.objects.create(name='Nom', bio='Bio', contact_email='moi@exemple.test')
+
+        self.assertEqual(self.client.get(add_url).status_code, 403)
 
 
 class MergeIdeasMigrationTests(TransactionTestCase):

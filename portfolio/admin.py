@@ -3,7 +3,12 @@ from django.contrib import admin
 # Register your models here.
 from .models import Profile, Formation, Project, Category, Skill, Experience
 
-admin.site.register(Profile)
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # Le site n'affiche qu'un profil : un second rendrait l'affichage imprévisible
+        return super().has_add_permission(request) and not Profile.objects.exists()
 
 
 @admin.register(Formation)
