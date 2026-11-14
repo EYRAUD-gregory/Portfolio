@@ -11,7 +11,7 @@ from django.db.migrations.executor import MigrationExecutor
 from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_settings
 
 from . import antispam
-from .models import Experience, Profile, Project
+from .models import Category, Experience, Formation, Profile, Project, Skill
 
 
 @override_settings(
@@ -241,6 +241,14 @@ class PagesTests(TestCase):
         project.repo_url = 'pas une adresse'
         with self.assertRaises(ValidationError):
             project.full_clean()
+
+    def test_projects_can_be_found_by_skill(self):
+        python = Skill.objects.create(name='Python', category=Category.objects.create(name='Langages'))
+        project = Project.objects.create(title='Projet', description='Description')
+        Project.objects.create(title='Autre projet', description='Description')
+        project.skills.add(python)
+
+        self.assertEqual([p.title for p in python.projects.all()], ['Projet'])
 
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')

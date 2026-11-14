@@ -12,6 +12,7 @@ admin.site.register(Experience)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'status', 'starting_date', 'ending_date')
     list_filter = ('status',)
+    filter_horizontal = ('skills',)
 
 
 @admin.register(Category)

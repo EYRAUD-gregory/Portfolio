@@ -43,6 +43,7 @@ class Project(models.Model):
     summary = models.CharField("résumé", max_length=200, blank=True)
     repo_url = models.URLField("lien du dépôt", blank=True)
     demo_url = models.URLField("lien de la démo", blank=True)
+    skills = models.ManyToManyField('Skill', verbose_name="technos", related_name='projects', blank=True)
 
     def __str__(self):
         return self.title
