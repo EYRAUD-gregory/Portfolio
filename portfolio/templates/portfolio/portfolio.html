@@ -57,7 +57,10 @@
             <figure class="hero-graph">
                 <div class="graph" id="graph"></div>
                 <figcaption>
-                    <p class="graph-legend" aria-hidden="true">MATCH (moi)-[:A_RÉALISÉ]-&gt;(<i class="k-item"></i>projet){% if graph_has_techs %}-[:UTILISE]-&gt;(<i class="k-tech"></i>techno){% endif %}</p>
+                    <ul class="graph-key" aria-label="Légende du graphe">
+                        {% for entry in graph_legend %}<li><i class="key-{{ entry.key }}"></i>{{ entry.label }}</li>{% endfor %}
+                    </ul>
+                    <p class="graph-legend" aria-hidden="true">MATCH (moi)-[:A_RÉALISÉ]-&gt;(projet){% if graph_has_techs %}-[:UTILISE]-&gt;(techno){% endif %}</p>
                     <p class="graph-help"><span class="if-hover">Attrapez un point : il entraîne ses voisins. Un projet s'ouvre au clic.</span><span class="if-touch">Touchez un projet pour le lire.</span></p>
                 </figcaption>
             </figure>

@@ -171,9 +171,11 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
 .graph line { stroke: #fff; stroke-opacity: .3; stroke-width: 1; transition: stroke-opacity .15s; }
 .graph .node { cursor: grab; touch-action: none; transition: opacity .15s; }
 .graph svg.dragging .node { cursor: grabbing; }
-.graph .node circle { fill: #fff; }
-.graph .node circle:not(.hit) { transform-box: fill-box; transform-origin: center; transition: transform .2s cubic-bezier(.3, 1.6, .5, 1); }
-.graph .node:hover circle:not(.hit) { transform: scale(1.3); }
+.graph .node circle, .graph .node polygon { fill: #fff; }
+/* Losange d'une expérience : le trait arrondit ses pointes */
+.graph .node polygon { stroke: #fff; stroke-width: 1.5; stroke-linejoin: round; }
+.graph .node circle:not(.hit), .graph .node polygon { transform-box: fill-box; transform-origin: center; transition: transform .2s cubic-bezier(.3, 1.6, .5, 1); }
+.graph .node:hover circle:not(.hit), .graph .node:hover polygon { transform: scale(1.3); }
 .graph .node.me:hover circle:not(.hit) { transform: scale(1.08); }
 .graph .node.tech circle { fill-opacity: .6; }
 .graph .node.sketch circle { fill: transparent; stroke: #fff; stroke-width: 1.6; stroke-dasharray: 3 3; }
@@ -186,15 +188,20 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
 .graph .node.tech text { font-size: 11px; font-weight: 500; opacity: 0; transition: opacity .15s; }
 .graph .node.tech.shared text { opacity: .9; }
 .graph a { cursor: pointer; outline: none; }
-.graph a:focus-visible circle:not(.hit) { stroke: #1e1e2f; stroke-width: 3; stroke-dasharray: none; }
+.graph a:focus-visible circle:not(.hit), .graph a:focus-visible polygon { stroke: #1e1e2f; stroke-width: 3; stroke-dasharray: none; }
 .graph svg.focus .node:not(.on) { opacity: .22; }
 .graph svg.focus line:not(.on) { stroke-opacity: .1; }
 .graph svg.focus line.on { stroke-opacity: 1; }
 .graph svg.focus .node.on text { opacity: 1; }
-.graph-legend { margin-top: 10px; font-family: var(--font-code); font-size: .8rem; color: rgba(255, 255, 255, .82); overflow-wrap: anywhere; }
-.graph-legend i { display: inline-block; border-radius: 50%; background: #fff; margin-right: 5px; }
-.graph-legend .k-item { width: 10px; height: 10px; }
-.graph-legend .k-tech { width: 6px; height: 6px; opacity: .65; vertical-align: 2px; }
+/* Légende : chaque symbole reprend la forme du point qu'il nomme */
+.graph-key { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: .86rem; color: rgba(255, 255, 255, .9); }
+.graph-key li { display: flex; align-items: center; gap: 7px; }
+.graph-key i { flex: none; box-sizing: border-box; width: 12px; height: 12px; border-radius: 50%; background: #fff; }
+.graph-key .key-me { width: 17px; height: 17px; }
+.graph-key .key-experience { width: 10px; height: 10px; margin-inline: 2px; border-radius: 1.5px; transform: rotate(45deg); }
+.graph-key .key-idea { background: transparent; border: 1.5px dashed #fff; }
+.graph-key .key-tech { width: 7px; height: 7px; opacity: .65; }
+.graph-legend { margin-top: 8px; font-family: var(--font-code); font-size: .8rem; color: rgba(255, 255, 255, .7); overflow-wrap: anywhere; }
 .graph-help { margin-top: 4px; font-size: .86rem; color: rgba(255, 255, 255, .72); }
 .if-touch { display: none; }
 @media (hover: none) { .if-hover { display: none; } .if-touch { display: inline; } }
@@ -469,7 +476,7 @@ dialog[open]::backdrop { background: rgba(14, 14, 24, .62); backdrop-filter: blu
   html { scroll-behavior: auto; }
   .tagline::after, .hero-text > *, .hero-graph, .status i::after { animation: none; }
   .nav, .nav-indicator, .button, .card, .card-media img, .card-plus, .card-veil, .idea, .idea img, .tags li,
-  .graph line, .graph .node, .graph .node circle, .graph text, .elsewhere a, .elsewhere a span,
+  .graph line, .graph .node, .graph .node circle, .graph .node polygon, .graph text, .elsewhere a, .elsewhere a span,
   dialog, dialog::backdrop, .dialog-close { transition: none; }
   .card:hover, .idea:hover, .button:hover, .elsewhere a:hover { transform: none; }
   .card:hover .card-media img, .idea:hover img { transform: none; }

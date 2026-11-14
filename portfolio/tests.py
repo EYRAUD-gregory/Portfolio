@@ -441,11 +441,20 @@ class PagesTests(TestCase):
         project = Project.objects.create(title='Projet', description='Description')
         response = self.client.get('/')
         self.assertContains(response, 'id="graph"')
-        # La légende n'annonce les technos que s'il y en a de reliées
+        # La légende ne nomme que ce que le graphe montre : ni techno, ni expérience, ni idée ici
         self.assertNotContains(response, 'UTILISE')
+        self.assertEqual([entry['key'] for entry in response.context['graph_legend']], ['me', 'project'])
+        self.assertContains(response, '<li><i class="key-project"></i>projet</li>')
+        self.assertNotContains(response, 'key-tech')
 
         project.skills.add(Skill.objects.create(name='Python', category=Category.objects.create(name='Langages')))
-        self.assertContains(self.client.get('/'), 'UTILISE')
+        Experience.objects.create(title='Poste', description='Description')
+        Project.objects.create(title='Idée', description='Description', status=Project.Status.IDEA)
+        response = self.client.get('/')
+        self.assertContains(response, 'UTILISE')
+        self.assertEqual(
+            [entry['label'] for entry in response.context['graph_legend']],
+            ['moi', 'expérience', 'projet', 'idée', 'techno'])
 
     def test_formation_years(self):
         self.assertEqual(Formation(starting_date=date(2021, 9, 1), ending_date=date(2023, 6, 30)).years(), '2021 – 2023')
@@ -501,6 +510,9 @@ class GraphDataTests(TestCase):
         self.assertEqual(nodes[experience.anchor]['href'], f'#experience-{experience.pk}')
         self.assertTrue(nodes[idea.anchor]['idea'])
         self.assertFalse(nodes[project.anchor]['idea'])
+        # Une expérience et un projet n'ont pas la même forme dans le graphe
+        self.assertEqual(nodes[experience.anchor]['kind'], 'experience')
+        self.assertEqual(nodes[project.anchor]['kind'], 'project')
         # Python sert à deux éléments : un seul point, deux liens
         self.assertEqual([n['label'] for n in graph['nodes'] if n['type'] == 'tech'], ['Python', 'Neo4j'])
         self.assertCountEqual(graph['links'], [

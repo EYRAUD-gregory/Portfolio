@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from . import antispam
 from .forms import ContactForm
-from .graph import build_details, build_graph, initials
+from .graph import build_details, build_graph, build_legend, initials
 from .models import Profile, Formation, Project, Category, Experience, Skill
 
 logger = logging.getLogger(__name__)
@@ -102,6 +102,7 @@ def portfolio_view(request):
             'image': request.build_absolute_uri(static('images/partage.jpeg')),
         },
         'graph_has_techs': any(node['type'] == 'tech' for node in graph['nodes']),
+        'graph_legend': build_legend(graph),
         'details': build_details(items),
     })
 

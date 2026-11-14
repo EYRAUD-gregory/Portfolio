@@ -161,7 +161,9 @@ function drawGraph(box, data) {
     const shared = node.type === 'tech' && node.degree > 1 ? ' shared' : '';
     node.group = make('g', { class: `node ${node.type}${node.idea ? ' sketch' : ''}${shared}` }, parent);
     make('circle', { class: 'hit', r: node.type === 'tech' ? (finger ? 18 : 13) : node.r + (finger ? 14 : 6) }, node.group);
-    make('circle', { r: node.r }, node.group);
+    // Une expérience est un losange, tout le reste un disque : la légende sous le graphe le dit
+    if (node.kind === 'experience') make('polygon', { points: '0,-10 10,0 0,10 -10,0' }, node.group);
+    else make('circle', { r: node.r }, node.group);
     const label = make('text', { y: node.type === 'me' ? 4.5 : node.r + 14, 'text-anchor': 'middle' }, node.group);
     label.textContent = node.label;
     // Place réservée autour du point : son libellé compris, s'il est toujours affiché

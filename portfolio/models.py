@@ -95,6 +95,9 @@ class Project(models.Model):
         "mis en avant", default=False,
         help_text="Affiche le projet en grand, en tête de la section Projets. Sans effet sur une idée.")
 
+    # Forme du point dans le graphe du bandeau, et entrée de sa légende
+    graph_kind = 'project'
+
     def __str__(self):
         return self.title
 
@@ -150,6 +153,7 @@ class Experience(models.Model):
     skills = models.ManyToManyField(Skill, verbose_name="technos", related_name='experiences', blank=True)
 
     is_idea = False
+    graph_kind = 'experience'
 
     def __str__(self):
         return self.title

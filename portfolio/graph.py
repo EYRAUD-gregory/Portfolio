@@ -35,6 +35,8 @@ def build_graph(profile, items):
         nodes.append({
             'id': item.anchor,
             'type': 'item',
+            # Expérience ou projet : le point n'a pas la même forme
+            'kind': item.graph_kind,
             'idea': item.is_idea,
             'label': short_label(item.title),
             'full': item.title,
@@ -53,6 +55,16 @@ def build_graph(profile, items):
                 nodes.append({'id': tech, 'type': 'tech', 'label': skill.name.strip()})
             links.append([item.anchor, tech])
     return {'nodes': nodes, 'links': links}
+
+
+# Entrées de la légende, dans l'ordre du graphe : du centre vers l'extérieur
+LEGEND = (('me', 'moi'), ('experience', 'expérience'), ('project', 'projet'), ('idea', 'idée'), ('tech', 'techno'))
+
+
+def build_legend(graph):
+    """La légende ne nomme que ce que le graphe montre."""
+    present = {'idea' if node.get('idea') else node.get('kind', node['type']) for node in graph['nodes']}
+    return [{'key': key, 'label': label} for key, label in LEGEND if key in present]
 
 
 def build_details(items):
