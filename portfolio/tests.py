@@ -260,6 +260,14 @@ class PagesTests(TestCase):
 
         self.assertEqual([e.company for e in python.experiences.all()], ['Entreprise'])
 
+    def test_formation_school_is_optional(self):
+        formation = Formation(title='Diplôme', description='Description')
+        formation.full_clean()
+        formation.school = 'Université'
+        formation.save()
+
+        self.assertEqual(Formation.objects.get().school, 'Université')
+
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
         Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)

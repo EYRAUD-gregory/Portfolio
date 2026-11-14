@@ -22,6 +22,7 @@ class Formation(models.Model):
     description = models.TextField()
     starting_date = models.DateField(null=True, blank=True)
     ending_date = models.DateField(null=True, blank=True)
+    school = models.CharField("établissement", max_length=200, blank=True)
 
     def __str__(self):
         return self.title

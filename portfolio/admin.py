@@ -4,7 +4,11 @@ from django.contrib import admin
 from .models import Profile, Formation, Project, Category, Skill, Experience
 
 admin.site.register(Profile)
-admin.site.register(Formation)
+
+
+@admin.register(Formation)
+class FormationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'school', 'starting_date', 'ending_date')
 
 
 @admin.register(Experience)
