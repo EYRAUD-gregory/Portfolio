@@ -159,7 +159,7 @@ function drawGraph(box, data) {
     node.r = node.type === 'me' ? 21 : node.type === 'item' ? 8.5 : 4;
     const parent = node.href ? make('a', { href: node.href, 'aria-label': node.full }, nodeLayer) : nodeLayer;
     const shared = node.type === 'tech' && node.degree > 1 ? ' shared' : '';
-    node.group = make('g', { class: `node ${node.type}${node.idea ? ' idea' : ''}${shared}` }, parent);
+    node.group = make('g', { class: `node ${node.type}${node.idea ? ' sketch' : ''}${shared}` }, parent);
     make('circle', { class: 'hit', r: node.type === 'tech' ? (finger ? 18 : 13) : node.r + (finger ? 14 : 6) }, node.group);
     make('circle', { r: node.r }, node.group);
     const label = make('text', { y: node.type === 'me' ? 4.5 : node.r + 14, 'text-anchor': 'middle' }, node.group);

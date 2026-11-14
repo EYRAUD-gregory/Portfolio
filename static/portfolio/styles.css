@@ -176,7 +176,7 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
 .graph .node:hover circle:not(.hit) { transform: scale(1.3); }
 .graph .node.me:hover circle:not(.hit) { transform: scale(1.08); }
 .graph .node.tech circle { fill-opacity: .6; }
-.graph .node.idea circle { fill: transparent; stroke: #fff; stroke-width: 1.6; stroke-dasharray: 3 3; }
+.graph .node.sketch circle { fill: transparent; stroke: #fff; stroke-width: 1.6; stroke-dasharray: 3 3; }
 .graph .node circle.hit { fill: transparent; stroke: none; }
 .graph text {
   fill: #fff; font-size: 12px; font-weight: 600; pointer-events: none;
