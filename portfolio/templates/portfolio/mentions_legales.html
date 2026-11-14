@@ -1,102 +1,82 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mentions légales de Grégory Eyraud, portfolio en ligne.">
-    <title>Mentions légales</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            padding: 0;
-        }
-        h1, h2 {
-            color: #333;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Mentions légales</h1>
-    </header>
+{% extends "portfolio/legal.html" %}
 
-    <main>
-        <section>
-            <h2>1. Éditeur du site</h2>
-            <p>Ce site est édité par :</p>
-            <ul>
-                <li><strong>Nom :</strong> Grégory Eyraud</li>
-                <li><strong>Adresse :</strong> 11 Avenue Pierre Semard</li>
-                <li><strong>Téléphone :</strong>06 16 08 49 40</li>
-                <li><strong>Email :</strong> <a href="mailto:gregory.eyraud@gmail.com">gregory.eyraud@gmail.com</a></li>
-            </ul>
-        </section>
+{% block title %}Mentions légales{% endblock %}
 
-        <section>
-            <h2>2. Hébergement</h2>
-            <p>Ce site est hébergé par :</p>
-            <ul>
-                <li><strong>Nom :</strong> Hetzner Online GmbH</li>
-                <li><strong>Adresse :</strong> Industriestr. 25, 91710 Gunzenhausen, Allemagne</li>
-                <li><strong>Téléphone :</strong> +49 (0)9831 505-0</li>
-                <li><strong>Site web :</strong> <a href="https://www.hetzner.com">https://www.hetzner.com</a></li>
-            </ul>
-        </section>
+{% block meta %}<meta name="description" content="Mentions légales de Grégory Eyraud, portfolio en ligne.">{% endblock %}
 
-        <section>
-            <h2>3. Propriété intellectuelle</h2>
-            <p>
-                Le contenu de ce site (textes, images, vidéos, graphismes, logos, etc.) est protégé par le droit
-                d'auteur et les lois relatives à la propriété intellectuelle. Toute reproduction, représentation,
-                modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son
-                contenu est strictement interdite sans autorisation préalable.
-            </p>
-            <p>
-                Certaines images présentes sur ce site ont été générées par des outils d'intelligence artificielle
-                (<strong>ex. DALL·E, MidJourney</strong>). Ces images sont utilisées conformément aux conditions
-                d’utilisation des outils concernés.
-            </p>
-        </section>
+{% block legal %}
+    <h1>Mentions légales</h1>
 
-        <section>
-            <h2>4. Données personnelles</h2>
-            <p>
-                Ce site collecte des données personnelles uniquement par son formulaire de contact. Le détail des
-                données traitées, des prestataires qui interviennent et de vos droits figure dans la
-                <a href="{% url 'privacy_policy' %}">politique de confidentialité</a>.
-            </p>
-        </section>
+    <section>
+        <h2>1. Éditeur du site</h2>
+        <p>Ce site est édité par :</p>
+        <ul>
+            <li><strong>Nom :</strong> Grégory Eyraud</li>
+            <li><strong>Adresse :</strong> 11 Avenue Pierre Semard</li>
+            <li><strong>Téléphone :</strong>06 16 08 49 40</li>
+            <li><strong>Email :</strong> <a href="mailto:gregory.eyraud@gmail.com">gregory.eyraud@gmail.com</a></li>
+        </ul>
+    </section>
 
-        <section>
-            <h2>5. Responsabilité</h2>
-            <p>
-                L’éditeur s’efforce de fournir des informations précises et à jour sur ce site. Toutefois, des erreurs
-                ou omissions peuvent survenir. L’éditeur décline toute responsabilité en cas de dommages liés à
-                l’utilisation des informations fournies.
-            </p>
-        </section>
+    <section>
+        <h2>2. Hébergement</h2>
+        <p>Ce site est hébergé par :</p>
+        <ul>
+            <li><strong>Nom :</strong> Hetzner Online GmbH</li>
+            <li><strong>Adresse :</strong> Industriestr. 25, 91710 Gunzenhausen, Allemagne</li>
+            <li><strong>Téléphone :</strong> +49 (0)9831 505-0</li>
+            <li><strong>Site web :</strong> <a href="https://www.hetzner.com">https://www.hetzner.com</a></li>
+        </ul>
+    </section>
 
-        <section>
-            <h2>6. Crédits</h2>
-            <ul>
-                <li>Icônes : <a href="https://fontawesome.com">Font Awesome Free</a>, licence CC BY 4.0.</li>
-                <li>Police : Montserrat, The Montserrat Project Authors, licence SIL Open Font License 1.1.</li>
-                <li>Feuille de style : W3.CSS.</li>
-                <li>Animation de l'en-tête d'après Marco Guglielmelli ; effet d'écriture d'après Ritch Rivia.</li>
-            </ul>
-        </section>
+    <section>
+        <h2>3. Propriété intellectuelle</h2>
+        <p>
+            Le contenu de ce site (textes, images, vidéos, graphismes, logos, etc.) est protégé par le droit
+            d'auteur et les lois relatives à la propriété intellectuelle. Toute reproduction, représentation,
+            modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son
+            contenu est strictement interdite sans autorisation préalable.
+        </p>
+        <p>
+            Certaines images présentes sur ce site ont été générées par des outils d'intelligence artificielle
+            (<strong>ex. DALL·E, MidJourney</strong>). Ces images sont utilisées conformément aux conditions
+            d’utilisation des outils concernés.
+        </p>
+    </section>
 
-        <section>
-            <h2>7. Contact</h2>
-            <p>Pour toute question ou demande concernant ce site, vous pouvez me contacter à l’adresse suivante :</p>
-            <p><a href="mailto:gregory.eyraud@gmail.com">gregory.eyraud@gmail.com</a></p>
-        </section>
+    <section>
+        <h2>4. Données personnelles</h2>
+        <p>
+            Ce site collecte des données personnelles uniquement par son formulaire de contact. Le détail des
+            données traitées, des prestataires qui interviennent et de vos droits figure dans la
+            <a href="{% url 'privacy_policy' %}">politique de confidentialité</a>.
+        </p>
+    </section>
 
-        <p><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
-    </main>
-</body>
-</html>
+    <section>
+        <h2>5. Responsabilité</h2>
+        <p>
+            L’éditeur s’efforce de fournir des informations précises et à jour sur ce site. Toutefois, des erreurs
+            ou omissions peuvent survenir. L’éditeur décline toute responsabilité en cas de dommages liés à
+            l’utilisation des informations fournies.
+        </p>
+    </section>
+
+    <section>
+        <h2>6. Crédits</h2>
+        <ul>
+            <li>Icônes : <a href="https://fontawesome.com">Font Awesome Free</a>, licence CC BY 4.0.</li>
+            <li>Police : Montserrat, The Montserrat Project Authors, licence SIL Open Font License 1.1.</li>
+            <li>Feuille de style : W3.CSS.</li>
+            <li>Animation de l'en-tête d'après Marco Guglielmelli ; effet d'écriture d'après Ritch Rivia.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>7. Contact</h2>
+        <p>Pour toute question ou demande concernant ce site, vous pouvez me contacter à l’adresse suivante :</p>
+        <p><a href="mailto:gregory.eyraud@gmail.com">gregory.eyraud@gmail.com</a></p>
+    </section>
+
+    <p class="legal-back"><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
+{% endblock %}

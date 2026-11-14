@@ -383,6 +383,17 @@ ul, ol { list-style: none; margin: 0; padding: 0; }
 .footer a { color: var(--ink-muted); }
 .footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 
+/* ---------- Pages légales : du texte, dans une colonne de lecture ---------- */
+.brand + .theme-button { margin-left: auto; }
+.legal { padding-top: 112px; padding-bottom: var(--section); }
+.legal > *, .legal section > * { max-width: 72ch; }
+.legal h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -.025em; margin-bottom: 20px; }
+.legal h2 { font-size: 1.25rem; font-weight: 700; margin: 40px 0 12px; }
+.legal p { margin-bottom: 12px; }
+.legal ul { list-style: disc; display: grid; gap: 6px; padding-left: 22px; margin-bottom: 12px; }
+.legal a { overflow-wrap: anywhere; }
+.legal-back { margin-top: 40px; font: 600 .95rem var(--font-title); }
+
 /* ---------- Fenêtre de détail : elle s'ouvre et se referme en fondu, avec l'image du projet ---------- */
 dialog {
   width: min(720px, calc(100vw - 32px)); max-height: min(86vh, 900px); padding: 0;

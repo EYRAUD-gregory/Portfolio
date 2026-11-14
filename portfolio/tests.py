@@ -225,6 +225,23 @@ class PagesTests(TestCase):
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
 
+    def test_legal_pages_share_the_site_layout(self):
+        Profile.objects.create(name='Prénom Nom', bio='Bio', contact_email='moi@exemple.test')
+
+        for url in ('/politique-de-confidentialite/', '/mentions-legales/'):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, '/static/portfolio/styles.css')
+                self.assertContains(response, '<span class="brand-mark">PN</span>')
+                self.assertContains(response, 'id="theme-button"')
+                self.assertNotContains(response, '<style')
+
+    def test_privacy_policy_says_what_the_browser_keeps(self):
+        # La page doit dire ce que fait le site : le thème choisi est mémorisé dans le navigateur
+        response = self.client.get('/politique-de-confidentialite/')
+
+        self.assertContains(response, 'stockage local de votre navigateur')
+
     def test_home_renders_items_without_image(self):
         # L'image est facultative : son absence ne doit pas faire tomber la page
         Project.objects.create(title='Projet sans image', description='Description')

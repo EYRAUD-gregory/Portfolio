@@ -99,9 +99,15 @@ def portfolio_view(request):
     })
 
 
+def legal_context():
+    # La barre et le pied de page des pages légales affichent le nom du profil
+    profile = Profile.objects.first()
+    return {'profile': profile, 'initials': initials(profile.name) if profile else ''}
+
+
 def privacy_policy(request):
-    return render(request, 'portfolio/politique_confidentialite.html')
+    return render(request, 'portfolio/politique_confidentialite.html', legal_context())
 
 
 def mentions_legales(request):
-    return render(request, 'portfolio/mentions_legales.html')
+    return render(request, 'portfolio/mentions_legales.html', legal_context())

@@ -1,0 +1,20 @@
+{% extends "portfolio/base.html" %}
+{% load static %}
+
+{% block body %}
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="nav" id="nav">
+    <div class="wrap nav-row">
+        <a class="brand" href="{% url 'portfolio_view' %}">{% if initials %}<span class="brand-mark">{{ initials }}</span>{% endif %}{{ profile.name|default:"Portfolio" }}</a>
+        <button type="button" class="nav-button theme-button" id="theme-button" aria-label="Changer de thème (clair ou sombre)" title="Thème clair ou sombre">◐</button>
+    </div>
+</header>
+
+<main class="wrap legal" id="contenu">
+{% block legal %}{% endblock %}
+</main>
+
+{% include "portfolio/_footer.html" %}
+<script src="{% static 'portfolio/script.js' %}"></script>
+{% endblock %}

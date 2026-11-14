@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Politique de Confidentialité</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            padding: 0;
-        }
-        h1, h2 {
-            color: #333;
-        }
-    </style>
-</head>
-<body>
+{% extends "portfolio/legal.html" %}
+
+{% block title %}Politique de Confidentialité{% endblock %}
+
+{% block legal %}
     <h1>Politique de Confidentialité</h1>
-    <p><em>Dernière mise à jour : 13 novembre 2026.</em></p>
+    <p><em>Dernière mise à jour : 14 novembre 2026.</em></p>
     <p>
         Cette page explique quelles données personnelles sont traitées lorsque vous consultez ce site ou utilisez son formulaire de contact, pourquoi, par qui, et quels sont vos droits.
     </p>
@@ -65,9 +49,12 @@
         <li>Votre adresse IP est gardée une heure au plus par le site, uniquement pour limiter le nombre d'envois du formulaire.</li>
     </ul>
 
-    <h2>6. Cookies</h2>
+    <h2>6. Cookies et stockage local</h2>
     <p>
         Ce site n'utilise aucun cookie de mesure d'audience ni de publicité. Seuls des cookies strictement nécessaires peuvent être déposés : protection du formulaire contre les requêtes forgées, affichage du message de confirmation après un envoi, et fonctionnement de la vérification anti-robot de Cloudflare.
+    </p>
+    <p>
+        Si vous changez le thème du site (clair ou sombre), ce choix est mémorisé dans le stockage local de votre navigateur pour être retrouvé à la visite suivante. Il reste sur votre appareil : il n'est pas transmis au site et ne sert pas à vous identifier.
     </p>
 
     <h2>7. Sécurité des données</h2>
@@ -90,6 +77,5 @@
     <h2>9. Modifications</h2>
     <p>Cette politique peut être mise à jour ; la date en haut de page indique sa dernière version.</p>
 
-    <p><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
-</body>
-</html>
+    <p class="legal-back"><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
+{% endblock %}
