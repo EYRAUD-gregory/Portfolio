@@ -150,7 +150,7 @@ class ContactFormTests(TestCase):
         self.assertNotContains(page, 'name="telephone"')
 
     def test_linkedin_link_is_shown_next_to_the_form(self):
-        self.assertNotContains(self.client.get('/'), 'class="contact-alternative"')
+        self.assertNotContains(self.client.get('/'), 'class="elsewhere"')
 
         Profile.objects.create(
             name='Nom', bio='Bio', contact_email='moi@exemple.test',
@@ -158,8 +158,10 @@ class ContactFormTests(TestCase):
         )
 
         response = self.client.get('/')
-        self.assertContains(response, 'class="contact-alternative"')
+        self.assertContains(response, 'class="elsewhere"')
         self.assertContains(response, 'href="https://www.linkedin.com/in/exemple/"')
+        # Pas de lien GitHub tant que le profil n'en a pas
+        self.assertNotContains(response, 'GitHub')
 
     def test_visitor_address_is_only_reply_to(self):
         # cc_myself forgé à la main : il ne doit plus avoir aucun effet
@@ -183,26 +185,31 @@ class ContactFormTests(TestCase):
     },
 )
 class ProjectModalTests(TestCase):
-    def test_description_is_html_escaped_in_data_attribute(self):
-        # La modale lit cet attribut comme du texte : il doit porter la description
-        # échappée pour le HTML, sans passer par escapejs / JSON.parse / innerHTML
-        Project.objects.create(
-            title='Projet',
-            description='Ligne "un"\n<script>alert(1)</script>',
+    def test_description_reaches_the_dialog_as_inert_json(self):
+        # La fenêtre de détail lit la description dans un bloc JSON et l'écrit en texte.
+        # json_script neutralise < > & : rien de ce qui est saisi ne peut fermer la balise
+        # ni devenir du HTML, et aucun passage par escapejs / innerHTML.
+        project = Project.objects.create(
+            title='Projet <b>gras</b>',
+            description='Ligne "un"\n</script><script>alert(1)</script>',
             image='projects/factice.png',
         )
 
         response = self.client.get('/')
 
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<script id="details-data" type="application/json">')
         self.assertContains(
             response,
-            'data-description="Ligne &quot;un&quot;\n&lt;script&gt;alert(1)&lt;/script&gt;"',
+            r'"body": "Ligne \"un\"\n\u003C/script\u003E\u003Cscript\u003Ealert(1)\u003C/script\u003E"',
         )
         self.assertNotContains(response, '<script>alert(1)</script>')
-        self.assertNotContains(response, 'u0022')
-        # Une date absente ne doit pas s'afficher « None » dans la modale
-        self.assertContains(response, 'data-start-date=""')
+        self.assertNotContains(response, '<b>gras</b>')
+        # La description n'est écrite nulle part ailleurs dans la page
+        self.assertNotContains(response, 'data-description')
+        # Une date absente ne s'affiche pas « None »
+        self.assertEqual(response.context['details'][project.anchor]['meta'], '')
+        self.assertNotContains(response, 'None')
 
 
 @override_settings(
@@ -331,15 +338,79 @@ class PagesTests(TestCase):
         with self.assertRaises(ValidationError):
             profile.full_clean()
 
-    def test_unfinished_projects_go_to_the_ideas_section(self):
+    def test_ideas_have_their_own_block(self):
         Project.objects.create(title='Terminé', description='Description')
-        Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)
+        Project.objects.create(title='Commencé', description='Description', status=Project.Status.IN_PROGRESS)
         Project.objects.create(title='Idée', description='Description', status=Project.Status.IDEA)
 
-        context = self.client.get('/').context
+        response = self.client.get('/')
 
-        self.assertEqual([p.title for p in context['projects']], ['Terminé'])
-        self.assertCountEqual([p.title for p in context['project_ideas']], ['En cours', 'Idée'])
+        self.assertCountEqual([p.title for p in response.context['projects']], ['Terminé', 'Commencé'])
+        self.assertEqual([p.title for p in response.context['project_ideas']], ['Idée'])
+        # Le témoin « En cours » n'apparaît que sur le projet commencé
+        self.assertContains(response, 'class="status"', count=1)
+
+    def test_featured_projects_come_first_on_a_wide_card(self):
+        Project.objects.create(title='Récent', description='Description', starting_date=date(2024, 1, 1))
+        Project.objects.create(
+            title='Ancien mis en avant', description='Description', starting_date=date(2020, 1, 1), featured=True)
+        # Sans effet sur une idée : elle reste dans son bloc
+        Project.objects.create(title='Idée', description='Description', status=Project.Status.IDEA, featured=True)
+
+        response = self.client.get('/')
+
+        self.assertEqual([p.title for p in response.context['projects']], ['Ancien mis en avant', 'Récent'])
+        self.assertContains(response, 'class="card wide"', count=1)
+
+    def test_card_summary_falls_back_on_the_first_sentence(self):
+        # Tant que le résumé n'est pas saisi : première phrase de la description, sans balise de lien
+        project = Project(
+            title='Projet',
+            description='Un <a href="https://exemple.test">outil</a>\nde tri. Puis la suite. Et la fin.')
+        self.assertEqual(project.card_summary(), 'Un outil de tri.')
+
+        project.summary = 'Résumé saisi'
+        self.assertEqual(project.card_summary(), 'Résumé saisi')
+        self.assertEqual(len(Project(title='Projet', description='mot ' * 100).card_summary()), 200)
+
+    def test_header_shows_lead_and_cv_only_when_filled(self):
+        profile = Profile.objects.create(name='Prénom Nom', bio='Un\n\nDeux', contact_email='moi@exemple.test')
+
+        response = self.client.get('/')
+        self.assertNotContains(response, 'class="hero-lead"')
+        self.assertNotContains(response, 'Télécharger le CV')
+        self.assertContains(response, '<span class="brand-mark">PN</span>')
+        self.assertContains(response, '<p>Un</p><p>Deux</p>')
+
+        profile.lead = 'Une phrase de présentation'
+        profile.cv = 'cv/cv.pdf'
+        profile.save()
+
+        response = self.client.get('/')
+        self.assertContains(response, '<p class="hero-lead">Une phrase de présentation</p>')
+        self.assertContains(response, 'href="/media/cv/cv.pdf" download')
+
+    def test_graph_is_drawn_only_when_there_is_something_to_link(self):
+        # Base vide : pas de cadre vide dans le bandeau, pas de section sans contenu
+        response = self.client.get('/')
+        self.assertNotContains(response, 'id="graph"')
+        for section in ('a-propos', 'experiences', 'competences', 'projets', 'parcours'):
+            self.assertNotContains(response, f'id="{section}"')
+        self.assertContains(response, 'id="contact"')
+
+        project = Project.objects.create(title='Projet', description='Description')
+        response = self.client.get('/')
+        self.assertContains(response, 'id="graph"')
+        # La légende n'annonce les technos que s'il y en a de reliées
+        self.assertNotContains(response, 'UTILISE')
+
+        project.skills.add(Skill.objects.create(name='Python', category=Category.objects.create(name='Langages')))
+        self.assertContains(self.client.get('/'), 'UTILISE')
+
+    def test_formation_years(self):
+        self.assertEqual(Formation(starting_date=date(2021, 9, 1), ending_date=date(2023, 6, 30)).years(), '2021 – 2023')
+        self.assertEqual(Formation(starting_date=date(2021, 1, 1), ending_date=date(2021, 6, 30)).years(), '2021')
+        self.assertEqual(Formation().years(), '')
 
     def test_home_loads_no_third_party_stylesheet_or_font(self):
         # Feuilles de style, police et icônes sont servies par le site lui-même
@@ -348,7 +419,14 @@ class PagesTests(TestCase):
         for host in ('w3schools.com', 'googleapis.com', 'gstatic.com', 'cdnjs.cloudflare.com'):
             with self.subTest(host=host):
                 self.assertNotContains(response, host)
-        self.assertContains(response, '/static/vendor/font-awesome/icons.svg#home')
+        for path in ('/static/portfolio/styles.css', '/static/portfolio/theme.js', '/static/portfolio/script.js',
+                     '/static/vendor/montserrat/montserrat-latin.woff2'):
+            with self.subTest(path=path):
+                self.assertContains(response, path)
+        # Aucun style ni script écrit dans la page : une politique de sécurité stricte reste possible
+        self.assertNotContains(response, '<style')
+        self.assertNotContains(response, ' style="')
+        self.assertNotContains(response, '<script>')
 
 
 @override_settings(

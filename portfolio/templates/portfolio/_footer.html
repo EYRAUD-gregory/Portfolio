@@ -1,0 +1,9 @@
+<footer class="footer">
+    <div class="wrap footer-row">
+        <p>© {% now "Y" %} {{ profile.name }}</p>
+        <nav aria-label="Informations légales">
+            <a href="{% url 'mentions_legales' %}">Mentions légales</a>
+            <a href="{% url 'privacy_policy' %}">Politique de confidentialité</a>
+        </nav>
+    </div>
+</footer>

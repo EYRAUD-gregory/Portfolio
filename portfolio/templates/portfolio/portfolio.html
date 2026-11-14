@@ -1,297 +1,257 @@
+{% extends "portfolio/base.html" %}
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        {% load static %}
-        <title>{{profile.name}} - Portfolio</title>
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{% static 'vendor/w3.css' %}">
-        <link rel="stylesheet" href="{% static 'portfolio/styles.css' %}">
-    </head>
-    <body class="w3-sand">
+{% block title %}{% if profile %}{{ profile.name }} - {% endif %}Portfolio{% endblock %}
 
-        <!-- Icon Bar (Sidebar - hidden on small screens) -->
-        <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center my-custom-red">
-            <a href="#main" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#home"></use></svg>
-                <p>ACCUEIL</p>
-            </a>
-            <a href="#formations" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#graduation-cap"></use></svg>
-                <p>FORMATIONS</p>
-            </a>
-            <a href="#competences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#cube"></use></svg>
-                <p>COMPÉTENCES</p>
-            </a>
-            <a href="#experiences" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#suitcase"></use></svg>
-                <p>EXPÉRIENCES</p>
-            </a>
-            <a href="#projects" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#rocket"></use></svg>
-                <p>PROJETS</p>
-            </a>
-            <a href="#idees_en_cours" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#eye"></use></svg>
-                <p>PROJETS EN COURS ET IDÉES</p>
-            </a>
-            <a href="#contact" class="w3-bar-item w3-button w3-padding-large my-custom-red w3-hover-orange">
-                <svg class="icon w3-xxlarge" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#envelope"></use></svg>
-                <p>CONTACT</p>
-            </a>
+{% block body %}
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="nav on-hero" id="nav">
+    <div class="wrap nav-row">
+        <a class="brand" href="#accueil">{% if initials %}<span class="brand-mark">{{ initials }}</span>{% endif %}{{ profile.name }}</a>
+        <nav class="nav-links" id="nav-links" aria-label="Sections">
+            {% if profile.bio %}<a href="#a-propos">À propos</a>{% endif %}
+            {% if experiences %}<a href="#experiences">Expériences</a>{% endif %}
+            {% if categories %}<a href="#competences">Compétences</a>{% endif %}
+            {% if projects or project_ideas %}<a href="#projets">Projets</a>{% endif %}
+            {% if formations %}<a href="#parcours">Parcours</a>{% endif %}
+            <a href="#contact">Contact</a>
+            <span class="nav-indicator" id="nav-indicator" aria-hidden="true"></span>
         </nav>
+        <button type="button" class="nav-button theme-button" id="theme-button" aria-label="Changer de thème (clair ou sombre)" title="Thème clair ou sombre">◐</button>
+        <button type="button" class="nav-button menu-button" id="menu-button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    </div>
+</header>
 
-        <!-- Navbar on small screens (Hidden on medium and large screens) -->
-        <div class="w3-top collapsed w3-hide-large w3-hide-medium w3-deep-orange" id="myNavbar">
-          <span class="burger-menu" id="burger-menu">☰</span>
-            <a href="#main" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">ACCUEIL</a>
-            <a href="#formations" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">FORMATIONS</a>
-            <a href="#competences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">COMPÉTENCES</a>
-            <a href="#experiences" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">EXPÉRIENCES</a>
-            <a href="#projects" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS</a>
-            <a href="#idees_en_cours" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">PROJETS EN COURS ET IDÉES</a>
-            <a href="#contact" class="w3-bar-item nav-item w3-button my-custom-red w3-hover-orange">CONTACT</a>
+<main>
+    <section class="hero" id="accueil">
+        <div class="wrap hero-grid{% if not has_graph %} hero-solo{% endif %}">
+            <div class="hero-text">
+                <h1>{{ profile.name|default:"Portfolio" }}</h1>
+                {% if taglines %}<p class="tagline" id="tagline">{{ taglines.0 }}</p>{% endif %}
+                {% if profile.lead %}<p class="hero-lead">{{ profile.lead }}</p>{% endif %}
+                <div class="hero-actions">
+                    {% if projects or project_ideas %}<a class="button button-primary" href="#projets">Voir les projets</a>{% endif %}
+                    <a class="button button-quiet" href="#contact">Me contacter</a>
+                    {% if profile.cv %}<a class="button button-quiet" href="{{ profile.cv.url }}" download>Télécharger le CV</a>{% endif %}
+                </div>
+            </div>
+            {% if has_graph %}
+            <!-- Le graphe est dessiné par le script à partir des données en bas de page -->
+            <figure class="hero-graph">
+                <div class="graph" id="graph"></div>
+                <figcaption>
+                    <p class="graph-legend" aria-hidden="true">MATCH (moi)-[:A_RÉALISÉ]-&gt;(<i class="k-item"></i>projet){% if graph_has_techs %}-[:UTILISE]-&gt;(<i class="k-tech"></i>techno){% endif %}</p>
+                    <p class="graph-help"><span class="if-hover">Attrapez un point : il entraîne ses voisins. Un projet s'ouvre au clic.</span><span class="if-touch">Touchez un projet pour le lire.</span></p>
+                </figcaption>
+            </figure>
+            {% endif %}
         </div>
+    </section>
 
-        <div id="main">
-            <!-- Header -->
-            <!-- Animation du header faite par Marco Guglielmelli -->
-            <!-- Conteneur principal du header avec l'animation -->
-            <div id="large-header" class="large-header">
-                <canvas id="bubbles-canvas"></canvas>
+    <div id="contenu" tabindex="-1"></div>
 
-                <header class="fullscreen-header header-content">
-                    <h1><b>{{ profile.name }}</b></h1>
-                    <span id="typewriter" class="w3-text-theme w3-xlarge"></span> <!-- Effet de typewriter -->
-
-                    <div class="about-section">
-                        <p>{{ profile.bio }}</p>
-                    </div>
-                </header>
-            </div>
-
-            <!-- Section "Mes formations" -->
-            <section id="formations" class="timeline-section">
-                <h2>Mon parcours universitaire</h2>
-                <div class="timeline">
-                    {% for formation in formations %}
-
-                    <div class="container {% if forloop.counter|divisibleby:2 %}right{% else %}left{% endif %}" data-anim="{{ forloop.counter }}">
-                        <div class="timeline-content">
-                            <h3>{{ formation.title }}</h3>
-                            <p>{{ formation.starting_date }} - {{ formation.ending_date }}</p>
-                            <p>{{ formation.description }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <section id="competences" class="skills-section">
-                <h2>Mes Compétences</h2>
-                <div class="skills-grid">
-                    {% for category in categories %}
-                    <div class="skill-card">
-                        <div class="icon-wrapper">
-                            <svg class="icon skill-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#code"></use></svg>
-                        </div>
-                        <h3 class="category-title">{{ category.name }}</h3>
-                        <p class="skill-description">
-                            {% for skill in category.skills.all %}
-                                {{ skill.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <!-- Experiences Section -->
-            <div class="w3-container w3-padding-32" id="experiences">
-                <h2>Mes expériences</h2>
-                <div class="w3-row-padding">
-                    {% for experience in experiences %}
-                    <div class="w3-third w3-margin-bottom">
-                        <div class="w3-card-4 project-card">
-                            <div class="experience-image-container">
-                                {% if experience.image %}<img src="{{ experience.image.url }}" alt="{{ experience.title }}" class="experience-image">{% endif %}
-                                <!-- Toute la carte est le bouton qui ouvre la modale -->
-                                <button type="button"
-                                    class="overlay experience-button"
-                                    data-title="{{ experience.title }}"
-                                    data-description="{{ experience.description }}"
-                                    data-start-date="{{ experience.starting_date|default_if_none:'' }}"
-                                    data-end-date="{{ experience.ending_date|default_if_none:'' }}">
-                                    <span class="w3-large">{{ experience.title }}</span>
-                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Projects Section -->
-            <div class="w3-container w3-padding-32" id="projects">
-                <h2>Mes projets</h2>
-                <div class="w3-row-padding">
-                    {% for project in projects %}
-                    <div class="w3-third w3-margin-bottom">
-                        <div class="w3-card-4 project-card">
-                            <div class="project-image-container">
-                                {% if project.image %}<img src="{{ project.image.url }}" alt="{{ project.title }}" class="project-image">{% endif %}
-                                <!-- Toute la carte est le bouton qui ouvre la modale -->
-                                <button type="button"
-                                    class="overlay project-button"
-                                    data-title="{{ project.title }}"
-                                    data-description="{{ project.description }}"
-                                    data-start-date="{{ project.starting_date|default_if_none:'' }}"
-                                    data-end-date="{{ project.ending_date|default_if_none:'' }}">
-                                    <span class="w3-large">{{ project.title }}</span>
-                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Projects Idea Section -->
-            <div class="w3-container w3-padding-32" id="idees_en_cours">
-                <h2>Mes idées / Mes projets en cours</h2>
-                <div class="w3-row-padding">
-                    {% for project_idea in project_ideas %}
-                    <div class="w3-third w3-margin-bottom">
-                        <div class="w3-card-4 project-card">
-                            <div class="project-image-container">
-                                {% if project_idea.image %}<img src="{{ project_idea.image.url }}" alt="{{ project_idea.title }}" class="project-image">{% endif %}
-                                <!-- Toute la carte est le bouton qui ouvre la modale -->
-                                <button type="button"
-                                    class="overlay project-button"
-                                    data-title="{{ project_idea.title }}"
-                                    data-description="{{ project_idea.description }}">
-                                    <span class="w3-large">{{ project_idea.title }}</span>
-                                    <svg class="icon overlay-icon" aria-hidden="true"><use href="{% static 'vendor/font-awesome/icons.svg' %}#plus"></use></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Modale pour afficher les détails du projet -->
-            <div id="projectModal" class="w3-modal w3-animate-opacity">
-                <div class="w3-modal-content">
-                    <span class="close-button" id="modalClose">&times;</span>
-                    <h3 id="modalTitle"></h3>
-                    <p id="modalDescription"></p>
-                    <p id="modalStartDate"><b>Date de début : </b><span></span></p>
-                    <p id="modalEndDate"><b>Date de fin : </b><span></span></p>
-                </div>
-            </div>
-
-
-            <section id="contact" class="contact-section">
-                <h2>Contactez-moi</h2>
-                <!-- Confirmation d'envoi (affichée après la redirection) -->
-                {% for message in messages %}
-                    <div class="alert">{{ message }}</div>
-                {% endfor %}
-                <!-- Formulaire : l'ancre ramène sur cette section si la page revient avec des erreurs -->
-                <form method="post" action="#contact" class="contact-form">
-                    {% csrf_token %}
-                    {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    <div class="form-group">
-                        <label for="name">Nom *</label>
-                        <input type="text" id="name" name="name" value="{{ form.name.value|default_if_none:'' }}" required>
-                        {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label for="sender">Email *</label>
-                        <input type="email" id="sender" name="sender" value="{{ form.sender.value|default_if_none:'' }}" required>
-                        {% for error in form.sender.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Sujet *</label>
-                        <input type="text" id="subject" name="subject" value="{{ form.subject.value|default_if_none:'' }}" required>
-                        {% for error in form.subject.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" name="message" required>{{ form.message.value|default_if_none:'' }}</textarea>
-                        {% for error in form.message.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="consent" name="consent" required>
-                            J'accepte que mes données soient utilisées conformément à la <a href="{% url 'privacy_policy' %}" target="_blank">politique de confidentialité</a>.
-                        </label>
-                        {% for error in form.consent.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
-                    </div>
-                    {% if turnstile_site_key %}
-                    <!-- Défi anti-robot : son jeton est vérifié côté serveur avant tout envoi -->
-                    <div class="form-group">
-                        <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-language="fr"></div>
-                    </div>
-                    {% endif %}
-                    <button type="submit" class="btn-submit" id="submit-button" disabled>Envoyer</button>
-                </form>
-                {% if profile.linkedin %}
-                <!-- Autre moyen de contact, sans passer par le formulaire -->
-                <p class="contact-alternative">
-                    Vous pouvez aussi me contacter sur
-                    <a href="{{ profile.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
-                </p>
-                {% endif %}
-            </section>
-
-        </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p>© 2026 {{ profile.name }}. Tous droits réservés.</p>
-            <ul class="footer-links">
-                <li><a href="#main">Accueil</a></li>
-                <li><a href="#formations">Formations</a></li>
-                <li><a href="#competences">Compétences</a></li>
-                <li><a href="#experiences">Expériences</a></li>
-                <li><a href="#idees_en_cours">Idées / Projets en cours </a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/gr%C3%A9gory-eyraud-6755a81bb/" target="_blank">
-                    <img src="{% static 'images/linkedin.png' %}" alt="LinkedIn" class="social-icon">
-                </a>
-                <a href="https://github.com/EYRAUD-gregory" target="_blank">
-                    <img src="{% static 'images/github.png' %}" alt="GitHub" class="social-icon">
-                </a>
-            </div>
-            <div class="legal-section">
-                <p>
-                    Ce site utilise un formulaire pour collecter des données personnelles dans le cadre de vos demandes.
-                    Consultez la <a href="{% url 'privacy_policy' %}">politique de confidentialité</a> pour en savoir plus.
-                </p>
-                <p>
-                    <a href="{% url 'mentions_legales' %}">Mentions légales</a>
-                </p>
+    {% if profile.bio %}
+    <section class="block" id="a-propos">
+        <div class="wrap rail">
+            <h2 class="rail-title" data-reveal>À propos</h2>
+            <div class="bio" data-reveal>
+                {% for paragraph in profile.bio_paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
             </div>
         </div>
-    </footer>
-
-    <!-- Accroches du bandeau d'accueil, lues par le script -->
-    {{ taglines|json_script:"taglines" }}
-    <!-- Lien vers le script JavaScript externe -->
-    <script src="{% static 'portfolio/script.js' %}"></script>
-    {% if turnstile_site_key %}
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    </section>
     {% endif %}
 
-    </body>
+    {% if experiences %}
+    <section class="block" id="experiences">
+        <div class="wrap rail">
+            <h2 class="rail-title" data-reveal>Expériences</h2>
+            <div>
+                {% for experience in experiences %}
+                <article class="xp" id="{{ experience.anchor }}" data-reveal>
+                    <div class="xp-text">
+                        {% if experience.period %}<p class="date">{{ experience.period }}</p>{% endif %}
+                        <h3>{{ experience.title }}</h3>
+                        {% if experience.company %}<p class="xp-company">{{ experience.company }}</p>{% endif %}
+                        <p class="xp-topic">{{ experience.card_summary }}</p>
+                        {% include "portfolio/_tags.html" with skills=experience.skills.all cut=":8" extra=-8 %}
+                        <div class="actions">
+                            <button type="button" class="button button-quiet button-small" data-open="{{ experience.anchor }}">Détails</button>
+                        </div>
+                    </div>
+                    {% if experience.image %}<div class="xp-media"><img src="{{ experience.image.url }}" alt=""></div>{% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 
-</html>
+    {% if categories %}
+    <section class="block" id="competences">
+        <div class="wrap rail">
+            <h2 class="rail-title" data-reveal>Compétences</h2>
+            <div>
+                {% for category in categories %}
+                <div class="skill-row" data-reveal>
+                    <h3>{{ category.name }}</h3>
+                    <ul class="tags">{% for skill in category.skills.all %}<li>{{ skill.name }}</li>{% endfor %}</ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if projects or project_ideas %}
+    <section class="band" id="projets">
+        <div class="wrap">
+            <h2 class="band-title" data-reveal>Projets</h2>
+            {% if projects %}
+            <div class="cards">
+                {% for project in projects %}
+                <article class="card{% if project.featured %} wide{% endif %}" id="{{ project.anchor }}" data-reveal>
+                    <!-- L'image ouvre le détail à la souris et au clavier ; le bouton « Détails » sert au doigt -->
+                    <button type="button" class="card-media{% if not project.image %} empty{% endif %}" data-open="{{ project.anchor }}" aria-label="Détails : {{ project.title }}">
+                        {% if project.image %}<img src="{{ project.image.url }}" alt="" loading="lazy">{% endif %}
+                        <span class="card-veil"><span class="card-plus">+</span></span>
+                    </button>
+                    <div class="card-body">
+                        {% if project.status == 'in_progress' %}<p class="status"><i></i>En cours</p>{% endif %}
+                        <h3>{{ project.title }}</h3>
+                        {% if project.period %}<p class="date">{{ project.period }}</p>{% endif %}
+                        <p class="summary">{{ project.card_summary }}</p>
+                        {% include "portfolio/_tags.html" with skills=project.skills.all cut=":6" extra=-6 %}
+                        <div class="actions">
+                            <button type="button" class="button button-quiet button-small" data-open="{{ project.anchor }}">Détails</button>
+                            {% for link in project.links %}<a class="link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.label }} ↗</a>{% endfor %}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if project_ideas %}
+            <h3 class="ideas-title" data-reveal>Idées</h3>
+            <p class="ideas-note">Pas encore commencées : ce sur quoi je veux travailler ensuite.</p>
+            <div class="ideas">
+                {% for idea in project_ideas %}
+                <article class="idea{% if not idea.image %} no-image{% endif %}" id="{{ idea.anchor }}" data-reveal>
+                    {% if idea.image %}<img src="{{ idea.image.url }}" alt="" loading="lazy">{% endif %}
+                    <div class="idea-body">
+                        <h3>{{ idea.title }}</h3>
+                        <p class="summary">{{ idea.card_summary }}</p>
+                        {% include "portfolio/_tags.html" with skills=idea.skills.all cut=":4" extra=-4 %}
+                        <button type="button" class="button button-quiet button-small" data-open="{{ idea.anchor }}">Détails</button>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if formations %}
+    <section class="block" id="parcours">
+        <div class="wrap rail">
+            <h2 class="rail-title" data-reveal>Parcours</h2>
+            <ol class="timeline">
+                {% for formation in formations %}
+                <li data-reveal>
+                    <p class="date">{{ formation.years }}</p>
+                    <div class="timeline-body">
+                        <h3>{{ formation.title }}</h3>
+                        {% if formation.school %}<p class="timeline-school">{{ formation.school }}</p>{% endif %}
+                        <p class="timeline-text">{{ formation.description }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="ink" id="contact">
+        <div class="wrap rail">
+            <h2 class="rail-title" data-reveal>Contact</h2>
+            <div class="contact">
+                <div>
+                    <!-- Confirmation d'envoi (affichée après la redirection) -->
+                    {% for message in messages %}<p class="alert" role="status">{{ message }}</p>{% endfor %}
+                    <!-- Formulaire : l'ancre ramène sur cette section si la page revient avec des erreurs -->
+                    <form method="post" action="#contact" class="form">
+                        {% csrf_token %}
+                        {% for error in form.non_field_errors %}<p class="field-error" role="alert">{{ error }}</p>{% endfor %}
+                        <div class="form-pair">
+                            <div class="field">
+                                <label for="name">Nom *</label>
+                                <input type="text" id="name" name="name" value="{{ form.name.value|default_if_none:'' }}" autocomplete="name" required>
+                                {% for error in form.name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="sender">Email *</label>
+                                <input type="email" id="sender" name="sender" value="{{ form.sender.value|default_if_none:'' }}" autocomplete="email" required>
+                                {% for error in form.sender.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="subject">Sujet *</label>
+                            <input type="text" id="subject" name="subject" value="{{ form.subject.value|default_if_none:'' }}" required>
+                            {% for error in form.subject.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                        </div>
+                        <div class="field">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" required>{{ form.message.value|default_if_none:'' }}</textarea>
+                            {% for error in form.message.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                        </div>
+                        <div>
+                            <label class="consent">
+                                <input type="checkbox" id="consent" name="consent" required>
+                                <span>J'accepte que mes données soient utilisées conformément à la <a href="{% url 'privacy_policy' %}" target="_blank">politique de confidentialité</a>.</span>
+                            </label>
+                            {% for error in form.consent.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                        </div>
+                        {% if turnstile_site_key %}
+                        <!-- Défi anti-robot : son jeton est vérifié côté serveur avant tout envoi -->
+                        <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-language="fr" data-theme="dark"></div>
+                        {% endif %}
+                        <button type="submit" class="button button-primary" id="submit-button" disabled>Envoyer le message</button>
+                    </form>
+                </div>
+                {% if profile.linkedin or profile.github %}
+                <!-- Autres moyens de contact, sans passer par le formulaire -->
+                <aside class="elsewhere" data-reveal>
+                    <p>Le formulaire m'arrive par e-mail. Vous me trouverez aussi ici :</p>
+                    {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>{% endif %}
+                    {% if profile.github %}<a href="{{ profile.github }}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>{% endif %}
+                </aside>
+                {% endif %}
+            </div>
+        </div>
+        {% include "portfolio/_footer.html" %}
+    </section>
+</main>
+
+<!-- Fenêtre de détail, remplie par le script : le contenu est écrit en texte, jamais en HTML -->
+<dialog id="details" aria-labelledby="d-title">
+    <button type="button" class="dialog-close" aria-label="Fermer">×</button>
+    <img class="dialog-img" id="d-img" alt="" hidden>
+    <div class="dialog-inner">
+        <p class="date" id="d-meta"></p>
+        <h3 id="d-title"></h3>
+        <ul class="tags" id="d-tools"></ul>
+        <p class="dialog-text" id="d-body"></p>
+        <div class="actions" id="d-links"></div>
+    </div>
+</dialog>
+
+<!-- Données lues par le script : json_script neutralise ce qui pourrait fermer la balise -->
+{{ taglines|json_script:"taglines" }}
+{{ graph|json_script:"graph-data" }}
+{{ details|json_script:"details-data" }}
+<script src="{% static 'portfolio/script.js' %}"></script>
+{% if turnstile_site_key %}
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endif %}
+{% endblock %}

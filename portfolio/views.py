@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from . import antispam
 from .forms import ContactForm
-from .graph import build_details, build_graph
+from .graph import build_details, build_graph, initials
 from .models import Profile, Formation, Project, Category, Experience, Skill
 
 logger = logging.getLogger(__name__)
@@ -73,22 +73,28 @@ def portfolio_view(request):
     # la disposition du graphe en dépend
     skills = Prefetch('skills', queryset=Skill.objects.order_by('name'))
     experiences = list(Experience.objects.prefetch_related(skills).order_by(NEWEST_FIRST))
-    projects = list(Project.objects.prefetch_related(skills).order_by(NEWEST_FIRST))
+    # Les projets mis en avant passent en tête : ce sont les cartes larges
+    projects = list(Project.objects.prefetch_related(skills).order_by('-featured', NEWEST_FIRST))
     items = experiences + projects
+    graph = build_graph(profile, items)
 
     return render(request, "portfolio/portfolio.html", {
         'form': form,
         'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
         'profile': profile,
+        'initials': initials(profile.name) if profile else '',
         'taglines': profile.tagline_list() if profile else [],
-        'projects': [p for p in projects if p.status == Project.Status.DONE],
+        # Cartes : les projets commencés, terminés ou en cours. Les idées ont leur propre bloc.
+        'projects': [p for p in projects if not p.is_idea],
+        'project_ideas': [p for p in projects if p.is_idea],
         'formations': Formation.objects.all().order_by(NEWEST_FIRST),
-        # Idées et projets en cours : les projets qui ne sont pas terminés
-        'project_ideas': [p for p in projects if p.status != Project.Status.DONE],
         'experiences': experiences,
         'categories': Category.objects.prefetch_related('skills').all(),
         # Graphe du bandeau et fenêtre de détail : des valeurs, que le script écrit en texte
-        'graph': build_graph(profile, items),
+        'graph': graph,
+        # Sans rien à relier, le bandeau se passe du graphe
+        'has_graph': len(graph['nodes']) > 1,
+        'graph_has_techs': any(node['type'] == 'tech' for node in graph['nodes']),
         'details': build_details(items),
     })
 

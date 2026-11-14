@@ -1,0 +1,18 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <!-- La police est demandée tout de suite : le graphe du bandeau attend sa largeur pour se disposer -->
+    <link rel="preload" href="{% static 'vendor/montserrat/montserrat-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <!-- Thème choisi avant le premier affichage (sans script, la page reste en clair) -->
+    <script src="{% static 'portfolio/theme.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'portfolio/styles.css' %}">
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

@@ -1,12 +1,25 @@
+import re
+
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.formats import date_format
+from django.utils.text import Truncator
+
+# Liens saisis en HTML dans d'anciennes descriptions : leurs balises n'ont pas leur place sur une carte
+LINK_TAG = re.compile(r'<a\s[^>]*>|</a>')
 
 
 def period_label(start, end):
     """« septembre 2023 – juin 2024 » ; un seul mois si les deux dates tombent le même, rien sans date."""
     months = dict.fromkeys(date_format(day, 'F Y') for day in (start, end) if day)
     return ' – '.join(months)
+
+
+def first_sentence(text, limit=200):
+    """Résumé de secours d'une carte, tant que le champ « résumé » n'est pas rempli."""
+    text = ' '.join(LINK_TAG.sub('', text).split())
+    sentence = re.split(r'(?<=[.!?])\s', text, maxsplit=1)[0]
+    return Truncator(sentence).chars(limit)
 
 
 class Profile(models.Model):
@@ -34,6 +47,9 @@ class Profile(models.Model):
     def tagline_list(self):
         return [line.strip() for line in self.taglines.splitlines() if line.strip()]
 
+    def bio_paragraphs(self):
+        return [line.strip() for line in self.bio.splitlines() if line.strip()]
+
 
 class Formation(models.Model):
     title = models.CharField(max_length=200)
@@ -44,6 +60,11 @@ class Formation(models.Model):
 
     def __str__(self):
         return self.title
+
+    def years(self):
+        """« 2021 – 2023 », ou une seule année, pour la frise."""
+        years = dict.fromkeys(str(day.year) for day in (self.starting_date, self.ending_date) if day)
+        return ' – '.join(years)
 
 
 class Project(models.Model):
@@ -82,6 +103,9 @@ class Project(models.Model):
 
     def period(self):
         return period_label(self.starting_date, self.ending_date)
+
+    def card_summary(self):
+        return self.summary or first_sentence(self.description)
 
     def meta(self):
         return self.period()
@@ -131,6 +155,9 @@ class Experience(models.Model):
 
     def period(self):
         return period_label(self.starting_date, self.ending_date)
+
+    def card_summary(self):
+        return self.summary or first_sentence(self.description)
 
     def meta(self):
         return ' · '.join(part for part in (self.company, self.period()) if part)

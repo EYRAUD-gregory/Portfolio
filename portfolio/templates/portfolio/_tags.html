@@ -1,0 +1,7 @@
+{# Technos d'une carte : les premières, puis « +N ». « cut » est une tranche (":6"), « extra » son opposé (-6). #}
+{% if skills %}
+<ul class="tags">
+    {% for skill in skills|slice:cut %}<li>{{ skill.name }}</li>{% endfor %}
+    {% if skills|length|add:extra > 0 %}<li class="more">+{{ skills|length|add:extra }}</li>{% endif %}
+</ul>
+{% endif %}
