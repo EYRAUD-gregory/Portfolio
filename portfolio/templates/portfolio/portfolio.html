@@ -284,6 +284,8 @@
         </div>
     </footer>
 
+    <!-- Accroches du bandeau d'accueil, lues par le script -->
+    {{ taglines|json_script:"taglines" }}
     <!-- Lien vers le script JavaScript externe -->
     <script src="{% static 'portfolio/script.js' %}"></script>
     {% if turnstile_site_key %}

@@ -283,6 +283,20 @@ class PagesTests(TestCase):
             with self.subTest(key=key):
                 self.assertEqual([item.title for item in context[key]], ['Récent', 'Ancien', 'Sans date'])
 
+    def test_taglines_come_from_the_profile(self):
+        # Sans profil : une liste vide, le script n'a rien à afficher
+        self.assertContains(self.client.get('/'), '<script id="taglines" type="application/json">[]</script>')
+
+        Profile.objects.create(
+            name='Nom', bio='Bio', contact_email='moi@exemple.test',
+            taglines='Python\n\n  Django & <ASGI>  \n',
+        )
+
+        response = self.client.get('/')
+        self.assertEqual(response.context['taglines'], ['Python', 'Django & <ASGI>'])
+        # json_script neutralise les caractères qui pourraient fermer la balise
+        self.assertNotContains(response, '<ASGI>')
+
     def test_unfinished_projects_go_to_the_ideas_section(self):
         Project.objects.create(title='Terminé', description='Description')
         Project.objects.create(title='En cours', description='Description', status=Project.Status.IN_PROGRESS)

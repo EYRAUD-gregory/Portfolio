@@ -2,7 +2,8 @@
     Ritch Rivia: https://www.youtube.com/watch?v=161yxE3-00o&ab_channel=RitchRivia
 */
 document.addEventListener("DOMContentLoaded", function() {
-    const textArray = ["IA Générative & Agentique", "Bases de données graphes", "Python", "GraphRAG"];
+    // Accroches saisies dans l'admin, transmises par la page en JSON
+    const textArray = JSON.parse(document.getElementById('taglines').textContent);
     const typingSpeed = 100;
     const erasingSpeed = 50;
     const initialDelay = 200;
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     typewriterSpan.textContent = '';
-    setTimeout(type, initialDelay);
+    if (textArray.length > 0) setTimeout(type, initialDelay);
 });
 
 

@@ -67,10 +67,13 @@ def portfolio_view(request):
     else:
         form = ContactForm()
 
+    profile = Profile.objects.first()
+
     return render(request, "portfolio/portfolio.html", {
         'form': form,
         'turnstile_site_key': settings.TURNSTILE_SITE_KEY if antispam.turnstile_enabled() else '',
-        'profile': Profile.objects.first(),
+        'profile': profile,
+        'taglines': profile.tagline_list() if profile else [],
         'projects': Project.objects.filter(status=Project.Status.DONE).order_by(NEWEST_FIRST),
         'formations': Formation.objects.all().order_by(NEWEST_FIRST),
         # Idées et projets en cours : les projets qui ne sont pas terminés

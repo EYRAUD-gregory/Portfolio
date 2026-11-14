@@ -12,9 +12,14 @@ class Profile(models.Model):
     linkedin = models.URLField(blank=True)
     github = models.URLField(blank=True)
     image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    # Textes qui défilent sous le nom, dans le bandeau d'accueil
+    taglines = models.TextField("accroches du bandeau", blank=True, help_text="Une accroche par ligne.")
 
     def __str__(self):
         return self.name
+
+    def tagline_list(self):
+        return [line.strip() for line in self.taglines.splitlines() if line.strip()]
 
 
 class Formation(models.Model):
