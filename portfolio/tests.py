@@ -224,6 +224,13 @@ class PagesTests(TestCase):
         self.assertContains(response, 'Idée sans image')
         self.assertNotContains(response, '<img src="/media/')
 
+    def test_project_is_done_by_default(self):
+        # Les projets saisis avant l'ajout du statut restent « terminés »
+        project = Project.objects.create(title='Projet', description='Description')
+
+        self.assertEqual(project.status, Project.Status.DONE)
+        self.assertEqual(project.get_status_display(), 'Terminé')
+
     def test_home_loads_no_third_party_stylesheet_or_font(self):
         # Feuilles de style, police et icônes sont servies par le site lui-même
         response = self.client.get('/')

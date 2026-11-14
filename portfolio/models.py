@@ -28,11 +28,17 @@ class Formation(models.Model):
 
 
 class Project(models.Model):
+    class Status(models.TextChoices):
+        IDEA = 'idea', 'Idée'
+        IN_PROGRESS = 'in_progress', 'En cours'
+        DONE = 'done', 'Terminé'
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='projects/', blank=True, null=True)
     starting_date = models.DateField(null=True, blank=True)
     ending_date = models.DateField(null=True, blank=True)
+    status = models.CharField("statut", max_length=20, choices=Status.choices, default=Status.DONE)
 
     def __str__(self):
         return self.title

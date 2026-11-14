@@ -8,9 +8,14 @@ from django.utils.html import format_html
 from .models import Profile, Formation, Project, ProjectIdea, Category, Skill, Experience
 
 admin.site.register(Profile)
-admin.site.register(Project)
 admin.site.register(Formation)
 admin.site.register(Experience)
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'status', 'starting_date', 'ending_date')
+    list_filter = ('status',)
 
 
 @admin.register(Category)
