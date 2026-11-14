@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import SimpleTestCase, TestCase, TransactionTestCase, override_settings
@@ -314,6 +315,18 @@ class PagesTests(TestCase):
         profile.full_clean()
 
         profile.lead = 'x' * 301
+        with self.assertRaises(ValidationError):
+            profile.full_clean()
+
+    def test_profile_cv_is_optional_and_must_be_a_pdf(self):
+        profile = Profile(name='Nom', bio='Bio', contact_email='moi@exemple.test')
+        profile.full_clean()
+        self.assertFalse(profile.cv)
+
+        profile.cv = SimpleUploadedFile('cv.pdf', b'%PDF-1.4')
+        profile.full_clean()
+
+        profile.cv = SimpleUploadedFile('cv.html', b'<script>alert(1)</script>')
         with self.assertRaises(ValidationError):
             profile.full_clean()
 

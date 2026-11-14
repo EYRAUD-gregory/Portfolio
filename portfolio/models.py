@@ -1,7 +1,4 @@
-from django.db import models
-
-# Create your models here.
-# portfolio/models.py
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -18,6 +15,11 @@ class Profile(models.Model):
     lead = models.CharField(
         "phrase de présentation", max_length=300, blank=True,
         help_text="Affichée sous les accroches, dans le bandeau d'accueil.")
+    # Sans fichier, le site n'affiche pas de bouton de téléchargement
+    cv = models.FileField(
+        "CV (PDF)", upload_to='cv/', blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
+        help_text="Facultatif. Le fichier est public : pas d'adresse postale ni de téléphone dedans.")
 
     def __str__(self):
         return self.name
