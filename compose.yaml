@@ -1,6 +1,8 @@
 services:
   web:
     build: .
+    # Après un redémarrage de la machine, le site revient seul
+    restart: unless-stopped
     env_file: .env
     # Boucle locale seulement : Docker publie les ports en contournant le pare-feu de l'hôte
     ports:
