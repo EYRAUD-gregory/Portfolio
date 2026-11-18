@@ -121,3 +121,8 @@ def privacy_policy(request):
 
 def mentions_legales(request):
     return render(request, 'portfolio/mentions_legales.html', legal_context())
+
+
+def page_not_found(request, exception):
+    # Même habillage que les pages légales, avec le nom du profil dans la barre et le pied de page
+    return render(request, 'portfolio/404.html', legal_context(), status=404)

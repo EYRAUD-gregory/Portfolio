@@ -228,7 +228,6 @@ class ContactFormTests(TestCase):
         urlopen.assert_not_called()
 
 
-
 @override_settings(
     STORAGES={
         'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
@@ -286,6 +285,28 @@ class PagesTests(TestCase):
                 self.assertContains(response, '<span class="brand-mark">PN</span>')
                 self.assertContains(response, 'id="theme-button"')
                 self.assertNotContains(response, '<style')
+
+    def test_unknown_address_shows_the_site_404_page(self):
+        Profile.objects.create(name='Prénom Nom', bio='Bio', contact_email='moi@exemple.test')
+
+        with self.assertLogs('django.request', level='WARNING'):
+            response = self.client.get('/nexiste-pas/')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, 'Page introuvable', status_code=404)
+        self.assertContains(response, '/static/portfolio/styles.css', status_code=404)
+        self.assertContains(response, '<span class="brand-mark">PN</span>', status_code=404)
+
+    def test_server_error_shows_the_site_500_page_without_the_database(self):
+        client = self.client_class(raise_request_exception=False)
+        with mock.patch('portfolio.views.legal_context', side_effect=RuntimeError('panne')), \
+                self.assertLogs('django.request', level='ERROR'), \
+                self.assertNumQueries(0):
+            response = client.get('/mentions-legales/')
+
+        self.assertEqual(response.status_code, 500)
+        self.assertContains(response, 'Une erreur est survenue', status_code=500)
+        self.assertContains(response, '/static/portfolio/styles.css', status_code=500)
 
     def test_privacy_policy_says_what_the_browser_keeps(self):
         # La page doit dire ce que fait le site : le thème choisi est mémorisé dans le navigateur

@@ -26,6 +26,10 @@ urlpatterns = [
     path('', include('portfolio.urls')),
 ]
 
+# Pages d'erreur hors DEBUG. La 500 garde le gestionnaire de Django, qui rend 500.html sans
+# interroger la base (l'erreur peut venir d'elle).
+handler404 = 'portfolio.views.page_not_found'
+
 # Ajouter ceci pour servir les fichiers médias en développement
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

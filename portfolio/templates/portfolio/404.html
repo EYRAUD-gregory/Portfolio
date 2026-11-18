@@ -1,0 +1,9 @@
+{% extends "portfolio/legal.html" %}
+
+{% block title %}Page introuvable{% endblock %}
+
+{% block legal %}
+    <h1>Page introuvable</h1>
+    <p>Cette adresse ne mène à aucune page du site. Le lien est peut-être ancien ou mal recopié.</p>
+    <p class="legal-back"><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
+{% endblock %}

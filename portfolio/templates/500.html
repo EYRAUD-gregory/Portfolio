@@ -1,0 +1,13 @@
+{% extends "portfolio/legal.html" %}
+{% comment %}
+Rendue par Django sans contexte ni requête, sur une erreur qui peut venir de la base :
+rien ici ne doit l'interroger (le nom du profil manque donc dans la barre et le pied de page).
+{% endcomment %}
+
+{% block title %}Erreur du site{% endblock %}
+
+{% block legal %}
+    <h1>Une erreur est survenue</h1>
+    <p>Le site n'a pas pu afficher cette page. L'erreur est enregistrée ; merci de réessayer dans quelques minutes.</p>
+    <p class="legal-back"><a href="{% url 'portfolio_view' %}">Retour au portfolio</a></p>
+{% endblock %}
