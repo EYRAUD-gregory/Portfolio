@@ -27,6 +27,8 @@ from .models import Category, Experience, Formation, Profile, Project, Skill
     TURNSTILE_SECRET_KEY='cle-secrete-de-test',
     CONTACT_LIMIT_PER_IP_PER_HOUR=3,
     CONTACT_LIMIT_PER_DAY=50,
+    # Aucune alerte réelle, même si le .env en configure une
+    CONTACT_NTFY_URL='',
     # Pas de manifest collectstatic pendant les tests
     STORAGES={
         'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
@@ -176,6 +178,55 @@ class ContactFormTests(TestCase):
         self.assertEqual(email.bcc, [])
         self.assertEqual(email.from_email, 'portfolio@exemple.test')
         self.assertEqual(email.reply_to, ['visiteur@exemple.test'])
+
+    def assert_alert_carries_nothing_from_the_visitor(self, request):
+        sent = request.full_url + request.data.decode()
+        for value in self.valid_data.values():
+            if value != 'on':
+                self.assertNotIn(value, sent)
+
+    @override_settings(CONTACT_NTFY_URL='https://ntfy.exemple.test/sujet-de-test')
+    def test_sent_message_triggers_an_alert_without_its_content(self):
+        with mock.patch('portfolio.notify.urllib.request.urlopen') as urlopen:
+            response = self.client.post('/', self.valid_data)
+
+        self.assertEqual(response.status_code, 302)
+        urlopen.assert_called_once()
+        request = urlopen.call_args.args[0]
+        self.assertTrue(request.full_url.startswith('https://ntfy.exemple.test/sujet-de-test?'))
+        self.assertIn('priority=default', request.full_url)
+        self.assert_alert_carries_nothing_from_the_visitor(request)
+
+    @override_settings(CONTACT_NTFY_URL='https://ntfy.exemple.test/sujet-de-test')
+    def test_send_failure_triggers_a_high_priority_alert(self):
+        with mock.patch('portfolio.views.EmailMessage.send', side_effect=OSError('SMTP injoignable')), \
+                mock.patch('portfolio.notify.urllib.request.urlopen') as urlopen, \
+                self.assertLogs('portfolio.views', level='ERROR'):
+            self.client.post('/', self.valid_data)
+
+        urlopen.assert_called_once()
+        request = urlopen.call_args.args[0]
+        self.assertIn('priority=high', request.full_url)
+        self.assert_alert_carries_nothing_from_the_visitor(request)
+
+    @override_settings(CONTACT_NTFY_URL='https://ntfy.exemple.test/sujet-de-test')
+    def test_unreachable_ntfy_does_not_break_the_form(self):
+        error = urllib.error.URLError('injoignable')
+        with mock.patch('portfolio.notify.urllib.request.urlopen', side_effect=error), \
+                self.assertLogs('portfolio.notify', level='WARNING') as logs:
+            response = self.client.post('/', self.valid_data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        # Le sujet ntfy fait office de secret : jamais dans les journaux
+        self.assertNotIn('sujet-de-test', '\n'.join(logs.output))
+
+    def test_no_alert_without_ntfy_address(self):
+        with mock.patch('portfolio.notify.urllib.request.urlopen') as urlopen:
+            self.client.post('/', self.valid_data)
+
+        urlopen.assert_not_called()
+
 
 
 @override_settings(

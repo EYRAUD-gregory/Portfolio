@@ -175,6 +175,10 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 CONTACT_RECIPIENT = os.getenv('CONTACT_RECIPIENT')
 
+# Alerte ntfy à chaque envoi, réussi ou non (adresse complète du sujet ; vide : pas d'alerte).
+# Le nom du sujet suffit pour lire et écrire sur ntfy.sh : c'est un secret, il reste dans le .env.
+CONTACT_NTFY_URL = os.getenv('CONTACT_NTFY_URL', '')
+
 # Anti-robot du formulaire (Cloudflare Turnstile). Sans clés : accepté en DEBUG, refusé sinon.
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY', '')
 TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY', '')

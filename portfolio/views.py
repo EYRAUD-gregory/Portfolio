@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.templatetags.static import static
 from django.urls import reverse
 
-from . import antispam
+from . import antispam, notify
 from .forms import ContactForm
 from .graph import build_details, build_graph, build_legend, initials
 from .models import Profile, Formation, Project, Category, Experience, Skill
@@ -59,9 +59,11 @@ def portfolio_view(request):
                     except Exception:
                         # Journalisé sans le contenu du message ; le formulaire reste rempli
                         logger.exception("Échec de l'envoi du formulaire de contact")
+                        notify.contact_failed()
                         form.add_error(None, "Votre message n'a pas pu être envoyé. Merci de réessayer plus tard.")
                     else:
                         antispam.record_send()
+                        notify.contact_sent()
                         # Redirection après POST : recharger la page ne renvoie pas le message,
                         # et l'ancre ramène le visiteur sur la confirmation
                         messages.success(request, "Votre message a été envoyé avec succès !")
