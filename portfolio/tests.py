@@ -581,7 +581,8 @@ class ProfileAdminTests(TestCase):
 
         Profile.objects.create(name='Nom', bio='Bio', contact_email='moi@exemple.test')
 
-        self.assertEqual(self.client.get(add_url).status_code, 403)
+        with self.assertLogs('django.request', level='WARNING'):
+            self.assertEqual(self.client.get(add_url).status_code, 403)
 
 
 class MergeIdeasMigrationTests(TransactionTestCase):

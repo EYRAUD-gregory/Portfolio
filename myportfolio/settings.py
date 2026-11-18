@@ -193,6 +193,30 @@ STORAGES = {
     },
 }
 
+# Journaux sur la sortie standard, que Docker garde (taille plafonnée dans le compose).
+# Sans cela, hors DEBUG, Django n'envoie les erreurs 500 qu'aux ADMINS par mail : avec ADMINS
+# vide, une erreur en prod ne laisserait aucune trace.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {'format': '{asctime} {levelname} {name} : {message}', 'style': '{'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'},
+    },
+    # Les loggers de l'app (formulaire, Turnstile) remontent ici
+    'root': {'handlers': ['console'], 'level': 'WARNING'},
+    'loggers': {
+        # Erreurs 500 avec leur trace, requêtes refusées (hôte inconnu, CSRF), 404 en WARNING
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'WARNING'),
+            'propagate': False,
+        },
+    },
+}
+
 # HTTPS : actif hors DEBUG. Le reverse proxy termine TLS et transmet X-Forwarded-Proto.
 SECURE_SSL_REDIRECT = env_bool('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG)
 if not DEBUG:

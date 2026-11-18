@@ -1,9 +1,17 @@
+# Journaux des conteneurs plafonnés : 3 fichiers de 10 Mo par service, les plus vieux effacés
+x-journaux: &journaux
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   web:
     build: .
     # Après un redémarrage de la machine, le site revient seul
     restart: unless-stopped
     env_file: .env
+    logging: *journaux
     # Boucle locale seulement : Docker publie les ports en contournant le pare-feu de l'hôte
     ports:
       - "127.0.0.1:8000:8000"
@@ -17,6 +25,7 @@ services:
     image: postgres:18.7
     restart: unless-stopped
     env_file: .env
+    logging: *journaux
     # Aucun port publié : seul le service web atteint la base, par le réseau du compose
     volumes:
       # Depuis la 18, l'image range ses données dans 18/docker sous ce point de montage
